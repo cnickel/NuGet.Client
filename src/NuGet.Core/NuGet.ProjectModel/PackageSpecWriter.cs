@@ -140,6 +140,9 @@ namespace NuGet.ProjectModel
 
             WriteMetadataBooleans(writer, msbuildMetadata);
 
+            // write NuGet lock file msbuild properties
+            WriteNuGetLockFileProperties(writer, msbuildMetadata);
+
             SetArrayValue(writer, "fallbackFolders", msbuildMetadata.FallbackFolders);
             SetArrayValue(writer, "configFilePaths", msbuildMetadata.ConfigFilePaths);
             if (msbuildMetadata.CrossTargeting)
@@ -165,6 +168,14 @@ namespace NuGet.ProjectModel
             SetValueIfTrue(writer, "legacyPackagesDirectory", msbuildMetadata.LegacyPackagesDirectory);
             SetValueIfTrue(writer, "validateRuntimeAssets", msbuildMetadata.ValidateRuntimeAssets);
             SetValueIfTrue(writer, "skipContentFileWrite", msbuildMetadata.SkipContentFileWrite);
+        }
+
+
+        private static void WriteNuGetLockFileProperties(IObjectWriter writer, ProjectRestoreMetadata msbuildMetadata)
+        {
+            SetValue(writer, "restorePackagesWithLockFile", msbuildMetadata.RestorePackagesWithLockFile);
+            SetValue(writer, "nuGetLockFilePath", msbuildMetadata.NuGetLockFilePath);
+            SetValueIfTrue(writer, "freezeLockFileOnRestore", msbuildMetadata.FreezeLockFileOnRestore);
         }
 
         private static void WriteMetadataTargetFrameworks(IObjectWriter writer, ProjectRestoreMetadata msbuildMetadata)

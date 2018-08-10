@@ -266,6 +266,11 @@ namespace NuGet.Commands
 
                     // Warning properties
                     result.RestoreMetadata.ProjectWideWarningProperties = GetWarningProperties(specItem);
+
+                    // NuGet lock file properties
+                    result.RestoreMetadata.RestorePackagesWithLockFile = specItem.GetProperty("RestorePackagesWithLockFile");
+                    result.RestoreMetadata.NuGetLockFilePath = specItem.GetProperty("NuGetLockFilePath");
+                    result.RestoreMetadata.FreezeLockFileOnRestore = IsPropertyTrue(specItem, "FreezeLockFileOnRestore");
                 }
 
                 if (restoreType == ProjectStyle.ProjectJson)
