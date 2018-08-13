@@ -148,21 +148,51 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                         testSolutionManager,
                         deleteOnRestartManager);
 
+                    // set up projects
                     var projectTargetFrameworkStr = "net45";
-                    var fullProjectPath = Path.Combine(randomProjectFolderPath, "project1.csproj");
-                    var projectNames = new ProjectNames(
-                        fullName: fullProjectPath,
-                        uniqueName: Path.GetFileName(fullProjectPath),
-                        shortName: Path.GetFileNameWithoutExtension(fullProjectPath),
-                        customUniqueName: Path.GetFileName(fullProjectPath));
-                    var vsProjectAdapter = new TestVSProjectAdapter(
-                        fullProjectPath,
-                        projectNames,
+                    var fullProjectPathB = Path.Combine(randomProjectFolderPath, "ProjectB", "project2.csproj");
+                    var projectNamesB = new ProjectNames(
+                        fullName: fullProjectPathB,
+                        uniqueName: Path.GetFileName(fullProjectPathB),
+                        shortName: Path.GetFileNameWithoutExtension(fullProjectPathB),
+                        customUniqueName: Path.GetFileName(fullProjectPathB));
+                    var vsProjectAdapterB = new TestVSProjectAdapter(
+                        fullProjectPathB,
+                        projectNamesB,
+                        projectTargetFrameworkStr);
+
+                    var projectServicesB = new TestProjectSystemServices();
+                    projectServicesB.SetupInstalledPackages(
+                        NuGetFramework.Parse(projectTargetFrameworkStr),
+                        new LibraryDependency
+                        {
+                            LibraryRange = new LibraryRange(
+                                "packageB",
+                                VersionRange.Parse("1.*"),
+                                LibraryDependencyTarget.Package)
+                        });
+
+                    var legacyPRProjectB = new LegacyPackageReferenceProject(
+                        vsProjectAdapterB,
+                        Guid.NewGuid().ToString(),
+                        projectServicesB,
+                        _threadingService);
+
+                    var projectPathA = Path.Combine(randomProjectFolderPath, "ProjectA");
+                    var fullProjectPathA = Path.Combine(projectPathA, "project1.csproj");
+                    var projectNamesA = new ProjectNames(
+                        fullName: fullProjectPathA,
+                        uniqueName: Path.GetFileName(fullProjectPathA),
+                        shortName: Path.GetFileNameWithoutExtension(fullProjectPathA),
+                        customUniqueName: Path.GetFileName(fullProjectPathA));
+                    var vsProjectAdapterA = new TestVSProjectAdapter(
+                        fullProjectPathA,
+                        projectNamesA,
                         projectTargetFrameworkStr,
                         restorePackagesWithLockFile: "true");
 
-                    var projectServices = new TestProjectSystemServices();
-                    projectServices.SetupInstalledPackages(
+                    var projectServicesA = new TestProjectSystemServices();
+                    projectServicesA.SetupInstalledPackages(
                         NuGetFramework.Parse(projectTargetFrameworkStr),
                         new LibraryDependency
                         {
@@ -171,21 +201,31 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                                 VersionRange.Parse("1.*"),
                                 LibraryDependencyTarget.Package)
                         });
+                    projectServicesA.SetupProjectDependencies(
+                        new ProjectRestoreReference
+                        {
+                            ProjectUniqueName = fullProjectPathB,
+                            ProjectPath = fullProjectPathB
+                        });
 
-                    var legacyPRProject = new LegacyPackageReferenceProject(
-                        vsProjectAdapter,
+                    var legacyPRProjectA = new LegacyPackageReferenceProject(
+                        vsProjectAdapterA,
                         Guid.NewGuid().ToString(),
-                        projectServices,
+                        projectServicesA,
                         _threadingService);
-                    testSolutionManager.NuGetProjects.Add(legacyPRProject);
+                    testSolutionManager.NuGetProjects.Add(legacyPRProjectB);
+                    testSolutionManager.NuGetProjects.Add(legacyPRProjectA);
 
                     var testLogger = new TestLogger();
                     var restoreContext = new DependencyGraphCacheContext(testLogger, testSettings);
                     var providersCache = new RestoreCommandProvidersCache();
 
-                    var packageContext = new SimpleTestPackageContext("packageA", "1.0.0");
-                    packageContext.AddFile("lib/net45/a.dll");
-                    SimpleTestPackageUtility.CreateOPCPackage(packageContext, packageSource);
+                    var packageContextA = new SimpleTestPackageContext("packageA", "1.0.0");
+                    packageContextA.AddFile("lib/net45/a.dll");
+                    var packageContextB = new SimpleTestPackageContext("packageB", "1.0.0");
+                    packageContextB.AddFile("lib/net45/b.dll");
+                    var packages = new List<SimpleTestPackageContext>() { packageContextA, packageContextB };
+                    SimpleTestPackageUtility.CreateOPCPackages(packages, packageSource);
 
                     var dgSpec = await DependencyGraphRestoreUtility.GetSolutionRestoreSpec(testSolutionManager, restoreContext);
 
@@ -207,10 +247,20 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                     {
                         Assert.True(restoreSummary.Success);
                         Assert.False(restoreSummary.NoOpRestore);
-                        Assert.Equal(1, restoreSummary.InstallCount);
                     }
 
-                    Assert.True(File.Exists(Path.Combine(randomProjectFolderPath, "packages.lock.json")));
+                    Assert.True(File.Exists(Path.Combine(projectPathA, "packages.lock.json")));
+                    var lockFile = NuGetLockFileFormat.Read(Path.Combine(projectPathA, "packages.lock.json"));
+                    Assert.Equal(1, lockFile.Targets.Count);
+
+                    Assert.Equal(".NETFramework,Version=v4.5", lockFile.Targets[0].Name);
+                    Assert.Equal(3, lockFile.Targets[0].Dependencies.Count);
+                    Assert.Equal("packageA", lockFile.Targets[0].Dependencies[0].Id);
+                    Assert.Equal(PackageInstallationType.Direct, lockFile.Targets[0].Dependencies[0].Type);
+                    Assert.Equal("packageB", lockFile.Targets[0].Dependencies[1].Id);
+                    Assert.Equal(PackageInstallationType.Transitive, lockFile.Targets[0].Dependencies[1].Type);
+                    Assert.Equal("project2", lockFile.Targets[0].Dependencies[2].Id);
+                    Assert.Equal(PackageInstallationType.Project, lockFile.Targets[0].Dependencies[2].Type);
                 }
             }
         }
@@ -837,6 +887,7 @@ namespace NuGet.PackageManagement.VisualStudio.Test
         private ISettings PopulateSettingsWithSources(SourceRepositoryProvider sourceRepositoryProvider, TestDirectory settingsDirectory)
         {
             var Settings = new Settings(settingsDirectory);
+            Settings.DeleteSection(ConfigurationConstants.PackageSources);
             foreach (var source in sourceRepositoryProvider.GetRepositories())
                 Settings.SetValue(ConfigurationConstants.PackageSources, ConfigurationConstants.PackageSources, source.PackageSource.Source);
 

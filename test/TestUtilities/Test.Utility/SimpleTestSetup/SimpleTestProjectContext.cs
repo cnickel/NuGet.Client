@@ -171,7 +171,7 @@ namespace NuGet.Test.Utility
                         {
                             return Properties["NuGetLockFilePath"];
                         }
-                        return Path.Combine(OutputPath, "packages.lock.json");
+                        return Path.Combine(Path.GetDirectoryName(ProjectPath), "packages.lock.json");
                     default:
                         return null;
                 }
