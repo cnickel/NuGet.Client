@@ -267,10 +267,8 @@ namespace NuGet.Commands
                     // Warning properties
                     result.RestoreMetadata.ProjectWideWarningProperties = GetWarningProperties(specItem);
 
-                    // NuGet lock file properties
-                    result.RestoreMetadata.RestorePackagesWithLockFile = specItem.GetProperty("RestorePackagesWithLockFile");
-                    result.RestoreMetadata.NuGetLockFilePath = specItem.GetProperty("NuGetLockFilePath");
-                    result.RestoreMetadata.FreezeLockFileOnRestore = IsPropertyTrue(specItem, "FreezeLockFileOnRestore");
+                    // Packages lock file properties
+                    result.RestoreMetadata.RestoreLockProperties = GetRestoreLockProperites(specItem);
                 }
 
                 if (restoreType == ProjectStyle.ProjectJson)
@@ -827,6 +825,14 @@ namespace NuGet.Commands
                 treatWarningsAsErrors: specItem.GetProperty("TreatWarningsAsErrors"),
                 warningsAsErrors: specItem.GetProperty("WarningsAsErrors"),
                 noWarn: specItem.GetProperty("NoWarn"));
+        }
+
+        private static RestoreLockProperties GetRestoreLockProperites(IMSBuildItem specItem)
+        {
+            return new RestoreLockProperties(
+                specItem.GetProperty("RestorePackagesWithLockFile"),
+                specItem.GetProperty("NuGetLockFilePath"),
+                IsPropertyTrue(specItem, "FreezeLockFileOnRestore"));
         }
 
         /// <summary>

@@ -364,9 +364,10 @@ namespace NuGet.PackageManagement.VisualStudio
                         treatWarningsAsErrors: _vsProjectAdapter.TreatWarningsAsErrors, 
                         noWarn: _vsProjectAdapter.NoWarn,
                         warningsAsErrors: _vsProjectAdapter.WarningsAsErrors),
-                    RestorePackagesWithLockFile = await _vsProjectAdapter.GetRestorePackagesWithLockFileAsync(),
-                    NuGetLockFilePath = await _vsProjectAdapter.GetNuGetLockFilePathAsync(),
-                    FreezeLockFileOnRestore = await _vsProjectAdapter.IsLockFileFreezeOnRestoreAsync()
+                    RestoreLockProperties = new RestoreLockProperties(
+                        await _vsProjectAdapter.GetRestorePackagesWithLockFileAsync(),
+                        await _vsProjectAdapter.GetNuGetLockFilePathAsync(),
+                        await _vsProjectAdapter.IsLockFileFreezeOnRestoreAsync())
                 }
             };
         }

@@ -11,7 +11,7 @@ namespace NuGet.ProjectModel
     /// <summary>
     /// FrameworkName/RuntimeIdentifier combination
     /// </summary>
-    public class NuGetLockFileTarget : IEquatable<NuGetLockFileTarget>
+    public class PackagesLockFileTarget : IEquatable<PackagesLockFileTarget>
     {
         /// <summary>
         /// Target framework.
@@ -33,7 +33,7 @@ namespace NuGet.ProjectModel
         /// </summary>
         public string Name => GetNameString(TargetFramework.DotNetFrameworkName, RuntimeIdentifier);
 
-        public bool Equals(NuGetLockFileTarget other)
+        public bool Equals(PackagesLockFileTarget other)
         {
             if (other == null)
             {
@@ -52,7 +52,7 @@ namespace NuGet.ProjectModel
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as NuGetLockFileTarget);
+            return Equals(obj as PackagesLockFileTarget);
         }
 
         public override int GetHashCode()

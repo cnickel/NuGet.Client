@@ -15,7 +15,7 @@ using NuGet.VisualStudio;
 
 namespace NuGet.PackageManagement.VisualStudio.Test
 {
-    public class TestVSProjectAdapter : IVsProjectAdapter
+    internal class TestVSProjectAdapter : IVsProjectAdapter
     {
         private readonly string _targetFrameworkString;
         private readonly string _restorePackagesWithLockFile;

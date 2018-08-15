@@ -43,10 +43,10 @@ namespace NuGet.PackageManagement.VisualStudio.Test
             {
                 // Arrange
                 var sourceRepositoryProvider = TestSourceRepositoryUtility.CreateSourceRepositoryProvider(
-                new List<Configuration.PackageSource>()
-                {
-                    new Configuration.PackageSource(packageSource.Path)
-                });
+                    new List<Configuration.PackageSource>()
+                    {
+                        new Configuration.PackageSource(packageSource.Path)
+                    });
 
                 using (var testSolutionManager = new TestSolutionManager(true))
                 using (var randomProjectFolderPath = TestDirectory.Create())
@@ -131,10 +131,10 @@ namespace NuGet.PackageManagement.VisualStudio.Test
             {
                 // Arrange
                 var sourceRepositoryProvider = TestSourceRepositoryUtility.CreateSourceRepositoryProvider(
-                new List<Configuration.PackageSource>()
-                {
-                    new Configuration.PackageSource(packageSource.Path)
-                });
+                    new List<Configuration.PackageSource>()
+                    {
+                        new Configuration.PackageSource(packageSource.Path)
+                    });
 
                 using (var testSolutionManager = new TestSolutionManager(true))
                 using (var randomProjectFolderPath = TestDirectory.Create())
@@ -250,7 +250,7 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                     }
 
                     Assert.True(File.Exists(Path.Combine(projectPathA, "packages.lock.json")));
-                    var lockFile = NuGetLockFileFormat.Read(Path.Combine(projectPathA, "packages.lock.json"));
+                    var lockFile = PackagesLockFileFormat.Read(Path.Combine(projectPathA, "packages.lock.json"));
                     Assert.Equal(1, lockFile.Targets.Count);
 
                     Assert.Equal(".NETFramework,Version=v4.5", lockFile.Targets[0].Name);
@@ -272,10 +272,10 @@ namespace NuGet.PackageManagement.VisualStudio.Test
             {
                 // Arrange
                 var sourceRepositoryProvider = TestSourceRepositoryUtility.CreateSourceRepositoryProvider(
-                new List<Configuration.PackageSource>()
-                {
-                    new Configuration.PackageSource(packageSource.Path)
-                });
+                    new List<Configuration.PackageSource>()
+                    {
+                        new Configuration.PackageSource(packageSource.Path)
+                    });
 
                 using (var testSolutionManager = new TestSolutionManager(true))
                 using (var randomProjectFolderPath = TestDirectory.Create())
@@ -397,10 +397,10 @@ namespace NuGet.PackageManagement.VisualStudio.Test
             {
                 // Arrange
                 var sourceRepositoryProvider = TestSourceRepositoryUtility.CreateSourceRepositoryProvider(
-                new List<Configuration.PackageSource>()
-                {
-                    new Configuration.PackageSource(packageSource.Path)
-                });
+                    new List<Configuration.PackageSource>()
+                    {
+                        new Configuration.PackageSource(packageSource.Path)
+                    });
 
                 using (var testSolutionManager = new TestSolutionManager(true))
                 using (var randomProjectFolderPath = TestDirectory.Create())
@@ -529,7 +529,7 @@ namespace NuGet.PackageManagement.VisualStudio.Test
 
                     Assert.True(File.Exists(projectLockFilePath));
 
-                    var lockFile = NuGetLockFileFormat.Read(projectLockFilePath);
+                    var lockFile = PackagesLockFileFormat.Read(projectLockFilePath);
                     Assert.Equal(2, lockFile.Targets.First().Dependencies.Count);
                 }
             }
@@ -542,10 +542,10 @@ namespace NuGet.PackageManagement.VisualStudio.Test
             {
                 // Arrange
                 var sourceRepositoryProvider = TestSourceRepositoryUtility.CreateSourceRepositoryProvider(
-                new List<Configuration.PackageSource>()
-                {
-                    new Configuration.PackageSource(packageSource.Path)
-                });
+                    new List<Configuration.PackageSource>()
+                    {
+                        new Configuration.PackageSource(packageSource.Path)
+                    });
 
                 using (var testSolutionManager = new TestSolutionManager(true))
                 using (var randomProjectFolderPath = TestDirectory.Create())
@@ -632,10 +632,10 @@ namespace NuGet.PackageManagement.VisualStudio.Test
             {
                 // Arrange
                 var sourceRepositoryProvider = TestSourceRepositoryUtility.CreateSourceRepositoryProvider(
-                new List<Configuration.PackageSource>()
-                {
-                    new Configuration.PackageSource(packageSource.Path)
-                });
+                    new List<Configuration.PackageSource>()
+                    {
+                        new Configuration.PackageSource(packageSource.Path)
+                    });
 
                 using (var testSolutionManager = new TestSolutionManager(true))
                 using (var randomProjectFolderPath = TestDirectory.Create())
@@ -767,10 +767,10 @@ namespace NuGet.PackageManagement.VisualStudio.Test
             {
                 // Arrange
                 var sourceRepositoryProvider = TestSourceRepositoryUtility.CreateSourceRepositoryProvider(
-                new List<Configuration.PackageSource>()
-                {
-                    new Configuration.PackageSource(packageSource.Path)
-                });
+                    new List<Configuration.PackageSource>()
+                    {
+                        new Configuration.PackageSource(packageSource.Path)
+                    });
 
                 using (var testSolutionManager = new TestSolutionManager(true))
                 using (var randomProjectFolderPath = TestDirectory.Create())

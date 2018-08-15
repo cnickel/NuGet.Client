@@ -179,7 +179,7 @@ namespace NuGet.Commands {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid restore input where RestorePackagesWithLockFile property is set to false and also exist a packages.lock.json file..
+        ///   Looks up a localized string similar to Invalid restore input where RestorePackagesWithLockFile property is set to false and also exist a packages lock file at {0}..
         /// </summary>
         internal static string Error_InvalidLockFileInput {
             get {
@@ -260,7 +260,7 @@ namespace NuGet.Commands {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package {0} sha512 hash validation failed. Package has been changed since the last restore..
+        ///   Looks up a localized string similar to The package {0} sha512 validation failed. The package is different than the last restore..
         /// </summary>
         internal static string Error_PackageValidationFailed {
             get {
@@ -305,7 +305,7 @@ namespace NuGet.Commands {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Packages lock file is inconsistent with project dependencies so restore can&apos;t be run in locked mode. Please disable FreezeLockFileOnRestore MSBuild property or pass explicit --reevaluate flag to run restore to update the lock file..
+        ///   Looks up a localized string similar to The packages lock file is inconsistent with the project dependencies so restore can&apos;t be run in locked mode. Please disable FreezeLockFileOnRestore MSBuild property or pass explicit --reevaluate flag to run restore to update the lock file..
         /// </summary>
         internal static string Error_RestoreInLockedMode {
             get {

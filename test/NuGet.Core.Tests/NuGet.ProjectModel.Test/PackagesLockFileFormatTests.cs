@@ -7,10 +7,10 @@ using Xunit;
 
 namespace NuGet.ProjectModel.Test
 {
-    public class NuGetLockFileFormatTests
+    public class PackagesLockFileFormatTests
     {
         [Fact]
-        public void NuGetLockFileFormat_Read()
+        public void PackagesLockFileFormat_Read()
         {
             var nuGetLockFileContent = @"{
                 ""version"": 1,
@@ -34,7 +34,7 @@ namespace NuGet.ProjectModel.Test
                 }
             }";
 
-            var lockFile = NuGetLockFileFormat.Parse(nuGetLockFileContent, "In Memory");
+            var lockFile = PackagesLockFileFormat.Parse(nuGetLockFileContent, "In Memory");
 
             Assert.Equal(1, lockFile.Targets.Count);
 
@@ -59,7 +59,7 @@ namespace NuGet.ProjectModel.Test
         }
 
         [Fact]
-        public void NuGetLockFileFormat_ReadWithRuntimeGraph()
+        public void PackagesLockFileFormat_ReadWithRuntimeGraph()
         {
             var nuGetLockFileContent = @"{
                 ""version"": 1,
@@ -100,7 +100,7 @@ namespace NuGet.ProjectModel.Test
                 }
             }";
 
-            var lockFile = NuGetLockFileFormat.Parse(nuGetLockFileContent, "In Memory");
+            var lockFile = PackagesLockFileFormat.Parse(nuGetLockFileContent, "In Memory");
 
             Assert.Equal(2, lockFile.Targets.Count);
 
@@ -127,7 +127,7 @@ namespace NuGet.ProjectModel.Test
         }
 
         [Fact]
-        public void NuGetLockFileFormat_Write()
+        public void PackagesLockFileFormat_Write()
         {
             var nuGetLockFileContent = @"{
                 ""version"": 1,
@@ -151,9 +151,9 @@ namespace NuGet.ProjectModel.Test
                 }
             }";
 
-            var lockFile = NuGetLockFileFormat.Parse(nuGetLockFileContent, "In Memory");
+            var lockFile = PackagesLockFileFormat.Parse(nuGetLockFileContent, "In Memory");
 
-            var output = JObject.Parse(NuGetLockFileFormat.Render(lockFile));
+            var output = JObject.Parse(PackagesLockFileFormat.Render(lockFile));
             var expected = JObject.Parse(nuGetLockFileContent);
 
             // Assert

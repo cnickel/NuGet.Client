@@ -792,11 +792,11 @@ namespace NuGet.SolutionRestoreManager.Test
 
             var actualProjectSpec = actualRestoreSpec.GetProjectSpec(projectFullPath);
             Assert.NotNull(actualProjectSpec);
-            Assert.Equal(restorePackagesWithLockFile, actualProjectSpec.RestoreMetadata.RestorePackagesWithLockFile);
+            Assert.Equal(restorePackagesWithLockFile, actualProjectSpec.RestoreMetadata.RestoreLockProperties.RestorePackagesWithLockFile);
 
-            Assert.Equal(lockFilePath, actualProjectSpec.RestoreMetadata.NuGetLockFilePath);
+            Assert.Equal(lockFilePath, actualProjectSpec.RestoreMetadata.RestoreLockProperties.NuGetLockFilePath);
 
-            Assert.Equal(MSBuildStringUtility.IsTrue(freezeLockFileOnRestore), actualProjectSpec.RestoreMetadata.FreezeLockFileOnRestore);
+            Assert.Equal(MSBuildStringUtility.IsTrue(freezeLockFileOnRestore), actualProjectSpec.RestoreMetadata.RestoreLockProperties.FreezeLockFileOnRestore);
         }
 
         private async Task<DependencyGraphSpec> CaptureNominateResultAsync(

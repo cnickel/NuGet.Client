@@ -229,6 +229,8 @@ namespace NuGet.Commands
 
             request.AllowNoOp = !request.CacheContext.NoCache && AllowNoOp;
             request.HideWarningsAndErrors = HideWarningsAndErrors;
+            request.ParentId = ParentId;
+            request.IsRestore = IsRestore;
         }
     }
 }

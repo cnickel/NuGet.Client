@@ -69,12 +69,12 @@ namespace NuGet.Commands
         /// <summary>
         /// NuGet lock file path
         /// </summary>
-        public string NuGetLockFilePath { get; }
+        private string PackagesLockFilePath { get; }
 
         /// <summary>
         /// NuGet lock file which will be used to lock down NuGet packages version
         /// </summary>
-        public NuGetLockFile NuGetLockFile { get; }
+        private PackagesLockFile PackagesLockFile { get; }
 
         public RestoreResult(
             bool success,
@@ -86,8 +86,8 @@ namespace NuGet.Commands
             string lockFilePath,
             CacheFile cacheFile,
             string cacheFilePath,
-            string nuGetLockFilePath,
-            NuGetLockFile nuGetLockFile,
+            string packagesLockFilePath,
+            PackagesLockFile packagesLockFile,
             ProjectStyle projectStyle,
             TimeSpan elapsedTime)
         {
@@ -100,8 +100,8 @@ namespace NuGet.Commands
             PreviousLockFile = previousLockFile;
             CacheFile = cacheFile;
             CacheFilePath = cacheFilePath;
-            NuGetLockFilePath = nuGetLockFilePath;
-            NuGetLockFile = nuGetLockFile;
+            PackagesLockFilePath = packagesLockFilePath;
+            PackagesLockFile = packagesLockFile;
             ProjectStyle = projectStyle;
             ElapsedTime = elapsedTime;
         }
@@ -203,11 +203,11 @@ namespace NuGet.Commands
                         (outputPath) => lockFileFormat.Write(outputPath, result.LockFile),
                         result.LockFilePath);
 
-                    if (NuGetLockFile != null && !string.IsNullOrEmpty(NuGetLockFilePath))
+                    if (PackagesLockFile != null && !string.IsNullOrEmpty(PackagesLockFilePath))
                     {
                         FileUtility.Replace(
-                            (outputPath) => NuGetLockFileFormat.Write(outputPath, NuGetLockFile),
-                            NuGetLockFilePath);
+                            (outputPath) => PackagesLockFileFormat.Write(outputPath, PackagesLockFile),
+                            PackagesLockFilePath);
                     }
                 }
             }

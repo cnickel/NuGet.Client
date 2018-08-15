@@ -13,7 +13,7 @@ using NuGet.Versioning;
 
 namespace NuGet.ProjectModel
 {
-    public class NuGetLockFileFormat
+    public class PackagesLockFileFormat
     {
         public static readonly int Version = 1;
 
@@ -26,12 +26,12 @@ namespace NuGet.ProjectModel
         private const string DependenciesProperty = "dependencies";
         private const string TypeProperty = "type";
 
-        public static NuGetLockFile Parse(string lockFileContent, string path)
+        public static PackagesLockFile Parse(string lockFileContent, string path)
         {
             return Parse(lockFileContent, NullLogger.Instance, path);
         }
 
-        public static NuGetLockFile Parse(string lockFileContent, ILogger log, string path)
+        public static PackagesLockFile Parse(string lockFileContent, ILogger log, string path)
         {
             using (var reader = new StringReader(lockFileContent))
             {
@@ -39,12 +39,12 @@ namespace NuGet.ProjectModel
             }
         }
 
-        public static NuGetLockFile Read(string filePath)
+        public static PackagesLockFile Read(string filePath)
         {
             return Read(filePath, NullLogger.Instance);
         }
 
-        public static NuGetLockFile Read(string filePath, ILogger log)
+        public static PackagesLockFile Read(string filePath, ILogger log)
         {
             using (var stream = File.OpenRead(filePath))
             {
@@ -52,7 +52,7 @@ namespace NuGet.ProjectModel
             }
         }
 
-        public static NuGetLockFile Read(Stream stream, ILogger log, string path)
+        public static PackagesLockFile Read(Stream stream, ILogger log, string path)
         {
             using (var textReader = new StreamReader(stream))
             {
@@ -60,7 +60,7 @@ namespace NuGet.ProjectModel
             }
         }
 
-        public static NuGetLockFile Read(TextReader reader, ILogger log, string path)
+        public static PackagesLockFile Read(TextReader reader, ILogger log, string path)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace NuGet.ProjectModel
                     path, ex.Message));
 
                 // Ran into parsing errors, mark it as unlocked and out-of-date
-                return new NuGetLockFile
+                return new PackagesLockFile
                 {
                     Version = int.MinValue,
                     Path = path
@@ -84,9 +84,9 @@ namespace NuGet.ProjectModel
             }
         }
 
-        private static NuGetLockFile ReadLockFile(JObject cursor)
+        private static PackagesLockFile ReadLockFile(JObject cursor)
         {
-            var lockFile = new NuGetLockFile()
+            var lockFile = new PackagesLockFile()
             {
                 Version = LockFileFormat.ReadInt(cursor, VersionProperty, defaultValue: int.MinValue),
                 Targets = LockFileFormat.ReadObject(cursor[DependenciesProperty] as JObject, ReadDependency),
@@ -95,7 +95,7 @@ namespace NuGet.ProjectModel
             return lockFile;
         }
 
-        public static string Render(NuGetLockFile lockFile)
+        public static string Render(PackagesLockFile lockFile)
         {
             using (var writer = new StringWriter())
             {
@@ -104,7 +104,7 @@ namespace NuGet.ProjectModel
             }
         }
 
-        public static void Write(string filePath, NuGetLockFile lockFile)
+        public static void Write(string filePath, PackagesLockFile lockFile)
         {
             // Create the directory if it does not exist
             var fileInfo = new FileInfo(filePath);
@@ -116,7 +116,7 @@ namespace NuGet.ProjectModel
             }
         }
 
-        public static void Write(Stream stream, NuGetLockFile lockFile)
+        public static void Write(Stream stream, PackagesLockFile lockFile)
         {
             using (var textWriter = new StreamWriter(stream))
             {
@@ -124,7 +124,7 @@ namespace NuGet.ProjectModel
             }
         }
 
-        public static void Write(TextWriter textWriter, NuGetLockFile lockFile)
+        public static void Write(TextWriter textWriter, PackagesLockFile lockFile)
         {
             using (var jsonWriter = new JsonTextWriter(textWriter))
             {
@@ -135,7 +135,7 @@ namespace NuGet.ProjectModel
             }
         }
 
-        private static JObject WriteLockFile(NuGetLockFile lockFile)
+        private static JObject WriteLockFile(PackagesLockFile lockFile)
         {
             var json = new JObject
             {
@@ -146,28 +146,31 @@ namespace NuGet.ProjectModel
             return json;
         }
 
-        private static NuGetLockFileTarget ReadDependency(string property, JToken json)
+        private static PackagesLockFileTarget ReadDependency(string property, JToken json)
         {
-            var target = new NuGetLockFileTarget();
-
             var parts = property.Split(LockFileFormat.PathSplitChars, 2);
-            target.TargetFramework = NuGetFramework.Parse(parts[0]);
+
+            var target = new PackagesLockFileTarget
+            {
+                TargetFramework = NuGetFramework.Parse(parts[0]),
+                Dependencies = LockFileFormat.ReadObject(json as JObject, ReadTargetDependency)
+            };
 
             if (parts.Length == 2)
             {
                 target.RuntimeIdentifier = parts[1];
             }
 
-            target.Dependencies = LockFileFormat.ReadObject(json as JObject, ReadTargetDependency);
-
             return target;
         }
 
         private static LockFileDependency ReadTargetDependency(string property, JToken json)
         {
-            var dependency = new LockFileDependency();
-
-            dependency.Id = property;
+            var dependency = new LockFileDependency
+            {
+                Id = property,
+                Dependencies = LockFileFormat.ReadObject(json[DependenciesProperty] as JObject, LockFileFormat.ReadPackageDependency)
+            };
 
             var jObject = json as JObject;
 
@@ -194,12 +197,11 @@ namespace NuGet.ProjectModel
             }
 
             dependency.Sha512 = LockFileFormat.ReadProperty<string>(jObject, Sha512Property);
-            dependency.Dependencies = LockFileFormat.ReadObject(json[DependenciesProperty] as JObject, LockFileFormat.ReadPackageDependency);
 
             return dependency;
         }
 
-        private static JProperty WriteTarget(NuGetLockFileTarget target)
+        private static JProperty WriteTarget(PackagesLockFileTarget target)
         {
             var json = LockFileFormat.WriteObject(target.Dependencies, WriteTargetDependency);
 
@@ -210,9 +212,10 @@ namespace NuGet.ProjectModel
 
         private static JProperty WriteTargetDependency(LockFileDependency dependency)
         {
-            var json = new JObject();
-
-            json[TypeProperty] = dependency.Type.ToString();
+            var json = new JObject
+            {
+                [TypeProperty] = dependency.Type.ToString()
+            };
 
             if (dependency.RequestedVersion != null)
             {

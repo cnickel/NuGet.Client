@@ -10,11 +10,11 @@ using NuGet.Shared;
 
 namespace NuGet.ProjectModel
 {
-    public static class NuGetLockFileUtilities
+    public static class PackagesLockFileUtilities
     {
         public static bool IsNuGetLockFileSupported(PackageSpec project)
         {
-            var restorePackagesWithLockFile = project.RestoreMetadata?.RestorePackagesWithLockFile;
+            var restorePackagesWithLockFile = project.RestoreMetadata?.RestoreLockProperties.RestorePackagesWithLockFile;
             return MSBuildStringUtility.IsTrue(restorePackagesWithLockFile) || File.Exists(GetNuGetLockFilePath(project));
         }
 
@@ -26,22 +26,23 @@ namespace NuGet.ProjectModel
                 return null;
             }
 
-            var path = project.RestoreMetadata.NuGetLockFilePath;
+            var path = project.RestoreMetadata.RestoreLockProperties.NuGetLockFilePath;
 
             if (string.IsNullOrEmpty(path))
             {
-                path = Path.Combine(project.BaseDirectory, "packages." + project.RestoreMetadata.ProjectName.Replace(' ', '_') + ".lock.json");
+                var projectName = Path.GetFileNameWithoutExtension(project.RestoreMetadata.ProjectPath);
+                path = Path.Combine(project.BaseDirectory, "packages." + projectName.Replace(' ', '_') + ".lock.json");
 
                 if (!File.Exists(path))
                 {
-                    path = Path.Combine(project.BaseDirectory, NuGetLockFileFormat.LockFileName);
+                    path = Path.Combine(project.BaseDirectory, PackagesLockFileFormat.LockFileName);
                 }
             }
 
             return path;
         }
 
-        public static bool IsLockFileStillValid(DependencyGraphSpec dgSpec, NuGetLockFile nuGetLockFile)
+        public static bool IsLockFileStillValid(DependencyGraphSpec dgSpec, PackagesLockFile nuGetLockFile)
         {
             var uniqueName = dgSpec.Restore.First();
             var project = dgSpec.GetProjectSpec(uniqueName);

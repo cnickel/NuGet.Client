@@ -330,9 +330,15 @@ namespace NuGet.ProjectModel
             }
 
             // read NuGet lock file msbuild properties
-            msbuildMetadata.RestorePackagesWithLockFile = rawMSBuildMetadata.GetValue<string>("restorePackagesWithLockFile");
-            msbuildMetadata.NuGetLockFilePath = rawMSBuildMetadata.GetValue<string>("nuGetLockFilePath");
-            msbuildMetadata.FreezeLockFileOnRestore = GetBoolOrFalse(rawMSBuildMetadata, "freezeLockFileOnRestore", packageSpec.FilePath);
+            var restoreLockProperties = rawMSBuildMetadata.GetValue<JObject>("restoreLockProperties");
+
+            if (restoreLockProperties != null)
+            {
+                msbuildMetadata.RestoreLockProperties = new RestoreLockProperties(
+                    rawMSBuildMetadata.GetValue<string>("restorePackagesWithLockFile"),
+                    rawMSBuildMetadata.GetValue<string>("nuGetLockFilePath"),
+                    GetBoolOrFalse(rawMSBuildMetadata, "freezeLockFileOnRestore", packageSpec.FilePath));
+            }
 
             return msbuildMetadata;
         }

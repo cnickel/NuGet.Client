@@ -33,8 +33,8 @@ namespace NuGet.Commands.Test
                     msbuildFiles: Enumerable.Empty<MSBuildOutputFile>(),
                     cacheFile: null,
                     cacheFilePath: null,
-                    nuGetLockFilePath: null,
-                    nuGetLockFile: null,
+                    packagesLockFilePath: null,
+                    packagesLockFile: null,
                     projectStyle: ProjectStyle.Unknown,
                     elapsedTime: TimeSpan.MinValue);
 
@@ -68,8 +68,8 @@ namespace NuGet.Commands.Test
                     msbuildFiles: Enumerable.Empty<MSBuildOutputFile>(),
                     cacheFile: null,
                     cacheFilePath: null,
-                    nuGetLockFilePath: null,
-                    nuGetLockFile: null,
+                    packagesLockFilePath: null,
+                    packagesLockFile: null,
                     projectStyle: ProjectStyle.Unknown,
                     elapsedTime: TimeSpan.MinValue);
 
@@ -104,8 +104,8 @@ namespace NuGet.Commands.Test
                     msbuildFiles: Enumerable.Empty<MSBuildOutputFile>(),
                     cacheFile: new CacheFile("NotSoRandomString"),
                     cacheFilePath: cachePath,
-                    nuGetLockFilePath: null,
-                    nuGetLockFile: null,
+                    packagesLockFilePath: null,
+                    packagesLockFile: null,
                     projectStyle: ProjectStyle.Unknown,
                     elapsedTime: TimeSpan.MinValue);
 

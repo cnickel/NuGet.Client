@@ -290,9 +290,10 @@ namespace NuGet.SolutionRestoreManager
                         warningsAsErrors: GetSingleOrDefaultNuGetLogCodes(projectRestoreInfo.TargetFrameworks, WarningsAsErrors, e => MSBuildStringUtility.GetNuGetLogCodes(e)),
                         noWarn: GetSingleOrDefaultNuGetLogCodes(projectRestoreInfo.TargetFrameworks, NoWarn, e => MSBuildStringUtility.GetNuGetLogCodes(e))),
                     CacheFilePath = NoOpRestoreUtilities.GetProjectCacheFilePath(cacheRoot: outputPath, projectPath: projectFullPath),
-                    RestorePackagesWithLockFile = GetRestorePackagesWithLockFile(projectRestoreInfo.TargetFrameworks),
-                    NuGetLockFilePath = GetNuGetLockFilePath(projectRestoreInfo.TargetFrameworks),
-                    FreezeLockFileOnRestore = IsLockFileFreezeOnRestore(projectRestoreInfo.TargetFrameworks)
+                    RestoreLockProperties = new RestoreLockProperties(
+                        GetRestorePackagesWithLockFile(projectRestoreInfo.TargetFrameworks),
+                        GetNuGetLockFilePath(projectRestoreInfo.TargetFrameworks),
+                        IsLockFileFreezeOnRestore(projectRestoreInfo.TargetFrameworks))
                 },
                 RuntimeGraph = GetRuntimeGraph(projectRestoreInfo),
                 RestoreSettings = new ProjectRestoreSettings() { HideWarningsAndErrors = true }

@@ -1,9 +1,8 @@
-using System;
-using System.Collections.Generic;
+// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 using System.Linq;
-using System.Text;
 using NuGet.Common;
-using NuGet.Frameworks;
 using NuGet.LibraryModel;
 using NuGet.Packaging.Core;
 using NuGet.ProjectModel;
@@ -11,17 +10,18 @@ using NuGet.Shared;
 
 namespace NuGet.Commands
 {
-    public class NuGetLockFileBuilder
+    public class PackagesLockFileBuilder
     {
         private readonly int _lockFileVersion;
-        public NuGetLockFileBuilder(int lockFileVersion)
+
+        public PackagesLockFileBuilder(int lockFileVersion)
         {
             _lockFileVersion = lockFileVersion;
         }
 
-        public NuGetLockFile CreateNuGetLockFile(LockFile assetsFile)
+        public PackagesLockFile CreateNuGetLockFile(LockFile assetsFile)
         {
-            var lockFile = new NuGetLockFile()
+            var lockFile = new PackagesLockFile()
             {
                 Version = _lockFileVersion
             };
@@ -31,7 +31,7 @@ namespace NuGet.Commands
 
             foreach (var target in assetsFile.Targets)
             {
-                var nuGettarget = new NuGetLockFileTarget()
+                var nuGettarget = new PackagesLockFileTarget()
                 {
                     TargetFramework = target.TargetFramework,
                     RuntimeIdentifier = target.RuntimeIdentifier
@@ -40,17 +40,17 @@ namespace NuGet.Commands
                 var framework = assetsFile.PackageSpec.TargetFrameworks.FirstOrDefault(
                     f => EqualityUtility.EqualsWithNullCheck(f.FrameworkName, target.TargetFramework));
 
-                var lilbraries = target.Libraries;
+                var libraries = target.Libraries;
 
                 // check if this is RID-based graph then only add those libraries which differ from original TFM.
                 if (!string.IsNullOrEmpty(target.RuntimeIdentifier))
                 {
                     var onlyTFM = assetsFile.Targets.First(t => EqualityUtility.EqualsWithNullCheck(t.TargetFramework, target.TargetFramework));
 
-                    lilbraries = target.Libraries.Where(lib => !onlyTFM.Libraries.Any(tfmLib => tfmLib.Equals(lib))).ToList();
+                    libraries = target.Libraries.Where(lib => !onlyTFM.Libraries.Any(tfmLib => tfmLib.Equals(lib))).ToList();
                 }
 
-                foreach (var library in lilbraries.Where(e => e.Type == LibraryType.Package))
+                foreach (var library in libraries.Where(e => e.Type == LibraryType.Package))
                 {
                     var identity = new PackageIdentity(library.Name, library.Version);
 
@@ -62,7 +62,7 @@ namespace NuGet.Commands
                         Dependencies = library.Dependencies
                     };
 
-                    var framework_dep = framework.Dependencies.FirstOrDefault(
+                    var framework_dep = framework?.Dependencies.FirstOrDefault(
                         dep => PathUtility.GetStringComparerBasedOnOS().Equals(dep.Name, library.Name));
 
                     if (framework_dep != null)
@@ -78,12 +78,12 @@ namespace NuGet.Commands
                     nuGettarget.Dependencies.Add(dependency);
                 }
 
-                foreach (var projectRef in lilbraries.Where(e => e.Type == LibraryType.Project || e.Type == LibraryType.ExternalProject))
+                foreach (var projectReference in libraries.Where(e => e.Type == LibraryType.Project || e.Type == LibraryType.ExternalProject))
                 {
                     var dependency = new LockFileDependency()
                     {
-                        Id = projectRef.Name,
-                        Dependencies = projectRef.Dependencies,
+                        Id = projectReference.Name,
+                        Dependencies = projectReference.Dependencies,
                         Type = PackageInstallationType.Project
                     };
 

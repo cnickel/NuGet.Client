@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -24,7 +23,6 @@ using NuGet.RuntimeModel;
 using NuGet.Test.Utility;
 using NuGet.Versioning;
 using NuGet.VisualStudio;
-using Test.Utility;
 using Test.Utility.Threading;
 using Xunit;
 using Task = System.Threading.Tasks.Task;
@@ -794,13 +792,13 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                 SpecValidationUtility.ValidateProjectSpec(actualRestoreSpec);
 
                 // Assert restorePackagesWithLockFile
-                Assert.Equal(restorePackagesWithLockFile, actualRestoreSpec.RestoreMetadata.RestorePackagesWithLockFile);
+                Assert.Equal(restorePackagesWithLockFile, actualRestoreSpec.RestoreMetadata.RestoreLockProperties.RestorePackagesWithLockFile);
 
                 // assert lockFilePath
-                Assert.Equal(lockFilePath, actualRestoreSpec.RestoreMetadata.NuGetLockFilePath);
+                Assert.Equal(lockFilePath, actualRestoreSpec.RestoreMetadata.RestoreLockProperties.NuGetLockFilePath);
 
                 // assert freezeLockFileOnRestore
-                Assert.Equal(freezeLockFileOnRestore, actualRestoreSpec.RestoreMetadata.FreezeLockFileOnRestore);
+                Assert.Equal(freezeLockFileOnRestore, actualRestoreSpec.RestoreMetadata.RestoreLockProperties.FreezeLockFileOnRestore);
             }
         }
 
@@ -847,7 +845,7 @@ namespace NuGet.PackageManagement.VisualStudio.Test
         }
     }
 
-    public class TestProjectSystemServices : INuGetProjectServices
+    internal class TestProjectSystemServices : INuGetProjectServices
     {
         public TestProjectSystemServices()
         {

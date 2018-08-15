@@ -9,15 +9,15 @@ using NuGet.Shared;
 
 namespace NuGet.ProjectModel
 {
-    public class NuGetLockFile : IEquatable<NuGetLockFile>
+    public class PackagesLockFile : IEquatable<PackagesLockFile>
     {
         public int Version { get; set; }
 
         public string Path { get; set; }
 
-        public IList<NuGetLockFileTarget> Targets { get; set; } = new List<NuGetLockFileTarget>();
+        public IList<PackagesLockFileTarget> Targets { get; set; } = new List<PackagesLockFileTarget>();
 
-        public bool Equals(NuGetLockFile other)
+        public bool Equals(PackagesLockFile other)
         {
             if (other == null)
             {
@@ -35,7 +35,7 @@ namespace NuGet.ProjectModel
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as NuGetLockFile);
+            return Equals(obj as PackagesLockFile);
         }
 
         public override int GetHashCode()

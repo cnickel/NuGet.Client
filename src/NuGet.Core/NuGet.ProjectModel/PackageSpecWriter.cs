@@ -140,9 +140,6 @@ namespace NuGet.ProjectModel
 
             WriteMetadataBooleans(writer, msbuildMetadata);
 
-            // write NuGet lock file msbuild properties
-            WriteNuGetLockFileProperties(writer, msbuildMetadata);
-
             SetArrayValue(writer, "fallbackFolders", msbuildMetadata.FallbackFolders);
             SetArrayValue(writer, "configFilePaths", msbuildMetadata.ConfigFilePaths);
             if (msbuildMetadata.CrossTargeting)
@@ -159,6 +156,9 @@ namespace NuGet.ProjectModel
             WriteMetadataTargetFrameworks(writer, msbuildMetadata);
             SetWarningProperties(writer, msbuildMetadata);
 
+            // write NuGet lock file msbuild properties
+            WriteNuGetLockFileProperties(writer, msbuildMetadata);
+
             writer.WriteObjectEnd();
         }
 
@@ -173,9 +173,19 @@ namespace NuGet.ProjectModel
 
         private static void WriteNuGetLockFileProperties(IObjectWriter writer, ProjectRestoreMetadata msbuildMetadata)
         {
-            SetValue(writer, "restorePackagesWithLockFile", msbuildMetadata.RestorePackagesWithLockFile);
-            SetValue(writer, "nuGetLockFilePath", msbuildMetadata.NuGetLockFilePath);
-            SetValueIfTrue(writer, "freezeLockFileOnRestore", msbuildMetadata.FreezeLockFileOnRestore);
+            if (msbuildMetadata.RestoreLockProperties != null &&
+                (!string.IsNullOrEmpty(msbuildMetadata.RestoreLockProperties.RestorePackagesWithLockFile) ||
+                 !string.IsNullOrEmpty(msbuildMetadata.RestoreLockProperties.NuGetLockFilePath) ||
+                 msbuildMetadata.RestoreLockProperties.FreezeLockFileOnRestore))
+            {
+                writer.WriteObjectStart("restoreLockProperties");
+
+                SetValue(writer, "restorePackagesWithLockFile", msbuildMetadata.RestoreLockProperties.RestorePackagesWithLockFile);
+                SetValue(writer, "nuGetLockFilePath", msbuildMetadata.RestoreLockProperties.NuGetLockFilePath);
+                SetValueIfTrue(writer, "freezeLockFileOnRestore", msbuildMetadata.RestoreLockProperties.FreezeLockFileOnRestore);
+
+                writer.WriteObjectEnd();
+            }
         }
 
         private static void WriteMetadataTargetFrameworks(IObjectWriter writer, ProjectRestoreMetadata msbuildMetadata)

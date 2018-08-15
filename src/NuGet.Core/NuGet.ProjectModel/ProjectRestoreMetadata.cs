@@ -111,20 +111,7 @@ namespace NuGet.ProjectModel
         /// </summary>
         public WarningProperties ProjectWideWarningProperties { get; set; } = new WarningProperties();
 
-        /// <summary>
-        /// Set when customer wants to opt into packages lock file
-        /// </summary>
-        public string RestorePackagesWithLockFile { get; set; }
-
-        /// <summary>
-        /// Packages.lock.json file path including file name if customer wants to override defualt file name.
-        /// </summary>
-        public string NuGetLockFilePath { get; set; }
-
-        /// <summary>
-        /// True, if updating lock file on restore is denied.
-        /// </summary>
-        public bool FreezeLockFileOnRestore { get; set; }
+        public RestoreLockProperties RestoreLockProperties { get; set; } = new RestoreLockProperties();
 
         public override int GetHashCode()
         {
@@ -148,9 +135,7 @@ namespace NuGet.ProjectModel
             hashCode.AddObject(ValidateRuntimeAssets);
             hashCode.AddObject(SkipContentFileWrite);
             hashCode.AddObject(ProjectWideWarningProperties);
-            hashCode.AddObject(RestorePackagesWithLockFile);
-            hashCode.AddObject(NuGetLockFilePath);
-            hashCode.AddObject(FreezeLockFileOnRestore);
+            hashCode.AddObject(RestoreLockProperties);
 
             return hashCode.CombinedHash;
         }
@@ -190,9 +175,7 @@ namespace NuGet.ProjectModel
                    SkipContentFileWrite == other.SkipContentFileWrite &&
                    EqualityUtility.SequenceEqualWithNullCheck(Files, other.Files) &&
                    EqualityUtility.EqualsWithNullCheck(ProjectWideWarningProperties, other.ProjectWideWarningProperties) &&
-                   PathUtility.GetStringComparerBasedOnOS().Equals(RestorePackagesWithLockFile, other.RestorePackagesWithLockFile) &&
-                   PathUtility.GetStringComparerBasedOnOS().Equals(NuGetLockFilePath, other.NuGetLockFilePath) &&
-                   FreezeLockFileOnRestore == other.FreezeLockFileOnRestore;
+                   EqualityUtility.EqualsWithNullCheck(RestoreLockProperties, other.RestoreLockProperties);
         }
 
         public ProjectRestoreMetadata Clone()
@@ -218,9 +201,7 @@ namespace NuGet.ProjectModel
                 TargetFrameworks = TargetFrameworks?.Select(c => c.Clone()).ToList(),
                 Files = Files?.Select(c => c.Clone()).ToList(),
                 ProjectWideWarningProperties = ProjectWideWarningProperties?.Clone(),
-                RestorePackagesWithLockFile = RestorePackagesWithLockFile,
-                NuGetLockFilePath = NuGetLockFilePath,
-                FreezeLockFileOnRestore = FreezeLockFileOnRestore
+                RestoreLockProperties = RestoreLockProperties?.Clone()
             };
         }
     }

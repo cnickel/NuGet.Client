@@ -10,20 +10,20 @@ using Xunit;
 
 namespace NuGet.ProjectModel.Test
 {
-    public class NuGetLockFileTests
+    public class PackagesLockFileTests
     {
         [Fact]
-        public void NuGetLockFile_Equals()
+        public void PackagesLockFile_Equals()
         {
-            Func<NuGetLockFile> getLockFile = () =>
+            Func<PackagesLockFile> getLockFile = () =>
             {
-                var lockFile = new NuGetLockFile()
+                var lockFile = new PackagesLockFile()
                 {
                     Version = 1,
 
-                    Targets = new List<NuGetLockFileTarget>()
+                    Targets = new List<PackagesLockFileTarget>()
                     {
-                        new NuGetLockFileTarget()
+                        new PackagesLockFileTarget()
                         {
                             TargetFramework = FrameworkConstants.CommonFrameworks.Net45,
 
@@ -50,7 +50,7 @@ namespace NuGet.ProjectModel.Test
                                 }
                             }
                         },
-                        new NuGetLockFileTarget()
+                        new PackagesLockFileTarget()
                         {
                             TargetFramework = FrameworkConstants.CommonFrameworks.Net45,
 

@@ -2522,9 +2522,9 @@ namespace NuGet.Commands.Test
                 var freezeLockFileBool = string.IsNullOrEmpty(FreezeLockFile) ? false : bool.Parse(FreezeLockFile);
 
                 // Assert
-                project1Spec.RestoreMetadata.RestorePackagesWithLockFile.Should().Be(RestoreWithLockFile);
-                project1Spec.RestoreMetadata.NuGetLockFilePath.Should().Be(NuGetLockFilePath);
-                project1Spec.RestoreMetadata.FreezeLockFileOnRestore.Should().Be(freezeLockFileBool);
+                project1Spec.RestoreMetadata.RestoreLockProperties.RestorePackagesWithLockFile.Should().Be(RestoreWithLockFile);
+                project1Spec.RestoreMetadata.RestoreLockProperties.NuGetLockFilePath.Should().Be(NuGetLockFilePath);
+                project1Spec.RestoreMetadata.RestoreLockProperties.FreezeLockFileOnRestore.Should().Be(freezeLockFileBool);
             }
         }
 

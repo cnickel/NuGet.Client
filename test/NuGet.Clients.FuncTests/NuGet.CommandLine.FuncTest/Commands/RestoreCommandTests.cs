@@ -57,7 +57,7 @@ namespace NuGet.CommandLine.FuncTest.Commands
                 // Assert
                 Assert.True(File.Exists(projectA.NuGetLockFileOutputPath));
 
-                var lockFile = NuGetLockFileFormat.Read(projectA.NuGetLockFileOutputPath);
+                var lockFile = PackagesLockFileFormat.Read(projectA.NuGetLockFileOutputPath);
                 Assert.Equal(4, lockFile.Targets.Count);
 
                 var targets = lockFile.Targets.Where(t => t.Dependencies.Count > 0).ToList();
@@ -130,7 +130,7 @@ namespace NuGet.CommandLine.FuncTest.Commands
                 Assert.True(File.Exists(projectA.NuGetLockFileOutputPath));
                 Assert.Equal(packagesLockFilePath, projectA.NuGetLockFileOutputPath);
 
-                var lockFile = NuGetLockFileFormat.Read(projectA.NuGetLockFileOutputPath);
+                var lockFile = PackagesLockFileFormat.Read(projectA.NuGetLockFileOutputPath);
                 Assert.Equal(4, lockFile.Targets.Count);
 
                 var targets = lockFile.Targets.Where(t => t.Dependencies.Count > 0).ToList();
