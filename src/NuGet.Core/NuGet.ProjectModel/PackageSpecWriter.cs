@@ -176,13 +176,15 @@ namespace NuGet.ProjectModel
             if (msbuildMetadata.RestoreLockProperties != null &&
                 (!string.IsNullOrEmpty(msbuildMetadata.RestoreLockProperties.RestorePackagesWithLockFile) ||
                  !string.IsNullOrEmpty(msbuildMetadata.RestoreLockProperties.NuGetLockFilePath) ||
-                 msbuildMetadata.RestoreLockProperties.FreezeLockFileOnRestore))
+                 msbuildMetadata.RestoreLockProperties.RestoreLockedMode) ||
+                 msbuildMetadata.RestoreLockProperties.ReevaluateNuGetLockFile)
             {
                 writer.WriteObjectStart("restoreLockProperties");
 
                 SetValue(writer, "restorePackagesWithLockFile", msbuildMetadata.RestoreLockProperties.RestorePackagesWithLockFile);
                 SetValue(writer, "nuGetLockFilePath", msbuildMetadata.RestoreLockProperties.NuGetLockFilePath);
-                SetValueIfTrue(writer, "freezeLockFileOnRestore", msbuildMetadata.RestoreLockProperties.FreezeLockFileOnRestore);
+                SetValueIfTrue(writer, "restoreLockedMode", msbuildMetadata.RestoreLockProperties.RestoreLockedMode);
+                SetValueIfTrue(writer, "reevaluateNuGetLockFile", msbuildMetadata.RestoreLockProperties.ReevaluateNuGetLockFile);
 
                 writer.WriteObjectEnd();
             }

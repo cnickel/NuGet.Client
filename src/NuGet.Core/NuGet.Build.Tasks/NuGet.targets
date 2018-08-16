@@ -659,7 +659,8 @@ Copyright (c) .NET Foundation. All rights reserved.
         <NoWarn>$(NoWarn)</NoWarn>
         <RestorePackagesWithLockFile>$(RestorePackagesWithLockFile)</RestorePackagesWithLockFile>
         <NuGetLockFilePath>$(NuGetLockFilePath)</NuGetLockFilePath>
-        <FreezeLockFileOnRestore>$(FreezeLockFileOnRestore)</FreezeLockFileOnRestore>
+        <RestoreLockedMode>$(RestoreLockedMode)</RestoreLockedMode>
+        <ReevaluateNuGetLockFile>$(ReevaluateNuGetLockFile)</ReevaluateNuGetLockFile>
       </_RestoreGraphEntry>
     </ItemGroup>
 

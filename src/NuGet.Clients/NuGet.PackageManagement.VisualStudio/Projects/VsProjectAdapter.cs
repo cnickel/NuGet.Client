@@ -379,11 +379,20 @@ namespace NuGet.PackageManagement.VisualStudio
             return await BuildProperties.GetPropertyValueAsync(ProjectBuildProperties.NuGetLockFilePath);
         }
 
-        public async Task<bool> IsLockFileFreezeOnRestoreAsync()
+        public async Task<bool> IsRestoreLockedAsync()
         {
             await _threadingService.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            var value = await BuildProperties.GetPropertyValueAsync(ProjectBuildProperties.FreezeLockFileOnRestore);
+            var value = await BuildProperties.GetPropertyValueAsync(ProjectBuildProperties.RestoreLockedMode);
+
+            return MSBuildStringUtility.IsTrue(value);
+        }
+
+        public async Task<bool> IsReevaluateNuGetLockFileAsync()
+        {
+            await _threadingService.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            var value = await BuildProperties.GetPropertyValueAsync(ProjectBuildProperties.ReevaluateNuGetLockFile);
 
             return MSBuildStringUtility.IsTrue(value);
         }

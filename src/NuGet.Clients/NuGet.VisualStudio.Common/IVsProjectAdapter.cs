@@ -142,9 +142,15 @@ namespace NuGet.VisualStudio
         Task<string> GetNuGetLockFilePathAsync();
 
         /// <summary>
-        /// FreezeLockFileOnRestore project property.
+        /// RestoreLockedMode project property.
         /// </summary>
         /// <returns></returns>
-        Task<bool> IsLockFileFreezeOnRestoreAsync();
+        Task<bool> IsRestoreLockedAsync();
+
+        /// <summary>
+        /// ReevaluateNuGetLockFile project property.
+        /// </summary>
+        /// <returns></returns>
+        Task<bool> IsReevaluateNuGetLockFileAsync();
     }
 }

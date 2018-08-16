@@ -748,11 +748,15 @@ namespace NuGet.PackageManagement.VisualStudio.Test
         }
 
         [Theory]
-        [InlineData("true", null, false)]
-        [InlineData(null, "packages.A.lock.json", false)]
-        [InlineData("true", null, true)]
-        [InlineData("false", null, false)]
-        public async Task GetPackageSpecsAsync_ReadLockFileSettings(string restorePackagesWithLockFile, string lockFilePath, bool freezeLockFileOnRestore)
+        [InlineData("true", null, false, false)]
+        [InlineData(null, "packages.A.lock.json", false, true)]
+        [InlineData("true", null, true, true)]
+        [InlineData("false", null, false, false)]
+        public async Task GetPackageSpecsAsync_ReadLockFileSettings(
+            string restorePackagesWithLockFile,
+            string lockFilePath,
+            bool restoreLockedMode,
+            bool reevaluateNuGetLockFile)
         {
             // Arrange
             using (var testDirectory = TestDirectory.Create())
@@ -767,8 +771,12 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                     .ReturnsAsync(lockFilePath);
 
                 Mock.Get(projectAdapter)
-                    .Setup(x => x.IsLockFileFreezeOnRestoreAsync())
-                    .ReturnsAsync(freezeLockFileOnRestore);
+                    .Setup(x => x.IsRestoreLockedAsync())
+                    .ReturnsAsync(restoreLockedMode);
+
+                Mock.Get(projectAdapter)
+                    .Setup(x => x.IsReevaluateNuGetLockFileAsync())
+                    .ReturnsAsync(reevaluateNuGetLockFile);
 
                 var projectServices = new TestProjectSystemServices();
 
@@ -797,8 +805,11 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                 // assert lockFilePath
                 Assert.Equal(lockFilePath, actualRestoreSpec.RestoreMetadata.RestoreLockProperties.NuGetLockFilePath);
 
-                // assert freezeLockFileOnRestore
-                Assert.Equal(freezeLockFileOnRestore, actualRestoreSpec.RestoreMetadata.RestoreLockProperties.FreezeLockFileOnRestore);
+                // assert restoreLockedMode
+                Assert.Equal(restoreLockedMode, actualRestoreSpec.RestoreMetadata.RestoreLockProperties.RestoreLockedMode);
+
+                // assert reevaluateNuGetLockFile
+                Assert.Equal(reevaluateNuGetLockFile, actualRestoreSpec.RestoreMetadata.RestoreLockProperties.ReevaluateNuGetLockFile);
             }
         }
 

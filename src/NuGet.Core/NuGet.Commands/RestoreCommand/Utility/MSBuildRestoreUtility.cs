@@ -832,7 +832,8 @@ namespace NuGet.Commands
             return new RestoreLockProperties(
                 specItem.GetProperty("RestorePackagesWithLockFile"),
                 specItem.GetProperty("NuGetLockFilePath"),
-                IsPropertyTrue(specItem, "FreezeLockFileOnRestore"));
+                IsPropertyTrue(specItem, "RestoreLockedMode"),
+                IsPropertyTrue(specItem, "ReevaluateNuGetLockFile"));
         }
 
         /// <summary>

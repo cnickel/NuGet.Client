@@ -22,17 +22,28 @@ namespace NuGet.ProjectModel
         /// <summary>
         /// True, if updating lock file on restore is denied.
         /// </summary>
-        public bool FreezeLockFileOnRestore { get; }
+        public bool RestoreLockedMode { get; }
+
+        /// <summary>
+        /// if true, then restore will ignore existing lock file and regenerate restore graph.
+        /// And if needed then overwrite the existing lock file.
+        /// </summary>
+        public bool ReevaluateNuGetLockFile { get; }
 
         public RestoreLockProperties()
         {
         }
 
-        public RestoreLockProperties(string restorePackagesWithLockFile, string nuGetLockFilePath, bool freezeLockFileOnRestore)
+        public RestoreLockProperties(
+            string restorePackagesWithLockFile,
+            string nuGetLockFilePath,
+            bool restoreLockedMode,
+            bool reevaluateNuGetLockFile)
         {
             RestorePackagesWithLockFile = restorePackagesWithLockFile;
             NuGetLockFilePath = nuGetLockFilePath;
-            FreezeLockFileOnRestore = freezeLockFileOnRestore;
+            RestoreLockedMode = restoreLockedMode;
+            ReevaluateNuGetLockFile = reevaluateNuGetLockFile;
         }
 
         public override int GetHashCode()
@@ -41,7 +52,8 @@ namespace NuGet.ProjectModel
 
             hashCode.AddObject(RestorePackagesWithLockFile);
             hashCode.AddObject(NuGetLockFilePath);
-            hashCode.AddObject(FreezeLockFileOnRestore);
+            hashCode.AddObject(RestoreLockedMode);
+            hashCode.AddObject(ReevaluateNuGetLockFile);
 
             return hashCode.CombinedHash;
         }
@@ -65,12 +77,13 @@ namespace NuGet.ProjectModel
 
             return StringComparer.OrdinalIgnoreCase.Equals(RestorePackagesWithLockFile, other.RestorePackagesWithLockFile) &&
                 PathUtility.GetStringComparerBasedOnOS().Equals(NuGetLockFilePath, other.NuGetLockFilePath) &&
-                FreezeLockFileOnRestore == other.FreezeLockFileOnRestore;
+                RestoreLockedMode == other.RestoreLockedMode &&
+                ReevaluateNuGetLockFile == other.ReevaluateNuGetLockFile;
         }
 
         public RestoreLockProperties Clone()
         {
-            return new RestoreLockProperties(RestorePackagesWithLockFile, NuGetLockFilePath, FreezeLockFileOnRestore);
+            return new RestoreLockProperties(RestorePackagesWithLockFile, NuGetLockFilePath, RestoreLockedMode, ReevaluateNuGetLockFile);
         }
     }
 }
