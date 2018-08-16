@@ -61,15 +61,5 @@ namespace NuGet.ProjectModel
 
             return combiner.CombinedHash;
         }
-
-        public LockFileTarget Clone()
-        {
-            return new LockFileTarget
-            {
-                TargetFramework = TargetFramework,
-                RuntimeIdentifier = RuntimeIdentifier,
-                Libraries = new List<LockFileTargetLibrary>(Libraries)
-            };
-        }
     }
 }

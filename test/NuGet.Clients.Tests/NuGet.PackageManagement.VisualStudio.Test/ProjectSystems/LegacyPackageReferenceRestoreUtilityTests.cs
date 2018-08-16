@@ -103,13 +103,14 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                     // Act
                     var restoreSummaries = await DependencyGraphRestoreUtility.RestoreAsync(
                         testSolutionManager,
+                        dgSpec,
                         restoreContext,
                         providersCache,
                         (c) => { },
                         sourceRepositoryProvider.GetRepositories(),
                         Guid.Empty,
                         false,
-                        dgSpec,
+                        true,
                         testLogger,
                         CancellationToken.None);
 
@@ -232,13 +233,14 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                     // Act
                     var restoreSummaries = await DependencyGraphRestoreUtility.RestoreAsync(
                         testSolutionManager,
+                        dgSpec,
                         restoreContext,
                         providersCache,
                         (c) => { },
                         sourceRepositoryProvider.GetRepositories(),
                         Guid.Empty,
                         false,
-                        dgSpec,
+                        true,
                         testLogger,
                         CancellationToken.None);
 
@@ -256,11 +258,11 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                     Assert.Equal(".NETFramework,Version=v4.5", lockFile.Targets[0].Name);
                     Assert.Equal(3, lockFile.Targets[0].Dependencies.Count);
                     Assert.Equal("packageA", lockFile.Targets[0].Dependencies[0].Id);
-                    Assert.Equal(PackageInstallationType.Direct, lockFile.Targets[0].Dependencies[0].Type);
+                    Assert.Equal(PackageDependencyType.Direct, lockFile.Targets[0].Dependencies[0].Type);
                     Assert.Equal("packageB", lockFile.Targets[0].Dependencies[1].Id);
-                    Assert.Equal(PackageInstallationType.Transitive, lockFile.Targets[0].Dependencies[1].Type);
+                    Assert.Equal(PackageDependencyType.Transitive, lockFile.Targets[0].Dependencies[1].Type);
                     Assert.Equal("project2", lockFile.Targets[0].Dependencies[2].Id);
-                    Assert.Equal(PackageInstallationType.Project, lockFile.Targets[0].Dependencies[2].Type);
+                    Assert.Equal(PackageDependencyType.Project, lockFile.Targets[0].Dependencies[2].Type);
                 }
             }
         }
@@ -333,13 +335,14 @@ namespace NuGet.PackageManagement.VisualStudio.Test
 
                     var restoreSummaries = await DependencyGraphRestoreUtility.RestoreAsync(
                         testSolutionManager,
+                        dgSpec,
                         restoreContext,
                         new RestoreCommandProvidersCache(),
                         (c) => { },
                         sourceRepositoryProvider.GetRepositories(),
                         Guid.Empty,
                         false,
-                        dgSpec,
+                        true,
                         testLogger,
                         CancellationToken.None);
 
@@ -363,13 +366,14 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                     // Act
                     restoreSummaries = await DependencyGraphRestoreUtility.RestoreAsync(
                         testSolutionManager,
+                        dgSpec,
                         restoreContext,
                         new RestoreCommandProvidersCache(),
                         (c) => { },
                         sourceRepositoryProvider.GetRepositories(),
                         Guid.Empty,
                         false,
-                        dgSpec,
+                        true,
                         testLogger,
                         CancellationToken.None);
 
@@ -463,13 +467,14 @@ namespace NuGet.PackageManagement.VisualStudio.Test
 
                     var restoreSummaries = await DependencyGraphRestoreUtility.RestoreAsync(
                         testSolutionManager,
+                        dgSpec,
                         restoreContext,
                         new RestoreCommandProvidersCache(),
                         (c) => { },
                         sourceRepositoryProvider.GetRepositories(),
                         Guid.Empty,
                         false,
-                        dgSpec,
+                        true,
                         testLogger,
                         CancellationToken.None);
 
@@ -510,13 +515,14 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                     // Act
                     restoreSummaries = await DependencyGraphRestoreUtility.RestoreAsync(
                         testSolutionManager,
+                        dgSpec,
                         restoreContext,
                         new RestoreCommandProvidersCache(),
                         (c) => { },
                         sourceRepositoryProvider.GetRepositories(),
                         Guid.Empty,
                         false,
-                        dgSpec,
+                        true,
                         testLogger,
                         CancellationToken.None);
 
@@ -606,13 +612,14 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                     // Act
                     var restoreSummaries = await DependencyGraphRestoreUtility.RestoreAsync(
                         testSolutionManager,
+                        dgSpec,
                         restoreContext,
                         providersCache,
                         (c) => { },
                         sourceRepositoryProvider.GetRepositories(),
                         Guid.Empty,
                         false,
-                        dgSpec,
+                        true,
                         testLogger,
                         CancellationToken.None);
 
@@ -696,13 +703,14 @@ namespace NuGet.PackageManagement.VisualStudio.Test
 
                     var restoreSummaries = await DependencyGraphRestoreUtility.RestoreAsync(
                         testSolutionManager,
+                        dgSpec,
                         restoreContext,
                         new RestoreCommandProvidersCache(),
                         (c) => { },
                         sourceRepositoryProvider.GetRepositories(),
                         Guid.Empty,
                         false,
-                        dgSpec,
+                        true,
                         testLogger,
                         CancellationToken.None);
 
@@ -739,13 +747,14 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                     // Act
                     restoreSummaries = await DependencyGraphRestoreUtility.RestoreAsync(
                         testSolutionManager,
+                        dgSpec,
                         restoreContext,
                         new RestoreCommandProvidersCache(),
                         (c) => { },
                         sourceRepositoryProvider.GetRepositories(),
                         Guid.Empty,
                         false,
-                        dgSpec,
+                        true,
                         testLogger,
                         CancellationToken.None);
 
@@ -828,13 +837,14 @@ namespace NuGet.PackageManagement.VisualStudio.Test
 
                     var restoreSummaries = await DependencyGraphRestoreUtility.RestoreAsync(
                         testSolutionManager,
+                        dgSpec,
                         restoreContext,
                         new RestoreCommandProvidersCache(),
                         (c) => { },
                         sourceRepositoryProvider.GetRepositories(),
                         Guid.Empty,
                         false,
-                        dgSpec,
+                        true,
                         testLogger,
                         CancellationToken.None);
 
@@ -863,13 +873,14 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                     // Act
                     restoreSummaries = await DependencyGraphRestoreUtility.RestoreAsync(
                         testSolutionManager,
+                        dgSpec,
                         restoreContext,
                         new RestoreCommandProvidersCache(),
                         (c) => { },
                         sourceRepositoryProvider.GetRepositories(),
                         Guid.Empty,
                         false,
-                        dgSpec,
+                        true,
                         testLogger,
                         CancellationToken.None);
 
@@ -953,13 +964,14 @@ namespace NuGet.PackageManagement.VisualStudio.Test
 
                     var restoreSummaries = await DependencyGraphRestoreUtility.RestoreAsync(
                         testSolutionManager,
+                        dgSpec,
                         restoreContext,
                         new RestoreCommandProvidersCache(),
                         (c) => { },
                         sourceRepositoryProvider.GetRepositories(),
                         Guid.Empty,
                         false,
-                        dgSpec,
+                        true,
                         testLogger,
                         CancellationToken.None);
 
@@ -983,13 +995,14 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                     // Act
                     restoreSummaries = await DependencyGraphRestoreUtility.RestoreAsync(
                         testSolutionManager,
+                        dgSpec,
                         restoreContext,
                         new RestoreCommandProvidersCache(),
                         (c) => { },
                         sourceRepositoryProvider.GetRepositories(),
                         Guid.Empty,
                         false,
-                        dgSpec,
+                        true,
                         testLogger,
                         CancellationToken.None);
 

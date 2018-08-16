@@ -21,7 +21,7 @@ namespace NuGet.ProjectModel
                 return false;
             }
 
-            return PathUtility.GetStringComparerBasedOnOS().Equals(x.Id, y.Id) &&
+            return StringComparer.OrdinalIgnoreCase.Equals(x.Id, y.Id) &&
                 EqualityUtility.EqualsWithNullCheck(x.ResolvedVersion, y.ResolvedVersion);
         }
 

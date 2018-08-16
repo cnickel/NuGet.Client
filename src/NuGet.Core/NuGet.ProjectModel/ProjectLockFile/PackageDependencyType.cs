@@ -3,7 +3,7 @@
 
 namespace NuGet.ProjectModel
 {
-    public enum PackageInstallationType
+    public enum PackageDependencyType
     {
         /// <summary>
         /// Package is directly installed into the project.

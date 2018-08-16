@@ -32,7 +32,7 @@ namespace NuGet.ProjectModel.Test
                                 new LockFileDependency()
                                 {
                                     Id = "PackageA",
-                                    Type = PackageInstallationType.Direct,
+                                    Type = PackageDependencyType.Direct,
                                     RequestedVersion = VersionRange.Parse("1.0.0"),
                                     ResolvedVersion = NuGetVersion.Parse("1.0.0"),
                                     Sha512 = "sha1",
@@ -44,7 +44,7 @@ namespace NuGet.ProjectModel.Test
                                 new LockFileDependency()
                                 {
                                     Id = "PackageB",
-                                    Type = PackageInstallationType.Transitive,
+                                    Type = PackageDependencyType.Transitive,
                                     ResolvedVersion = NuGetVersion.Parse("1.0.0"),
                                     Sha512 = "sha2"
                                 }
@@ -61,7 +61,7 @@ namespace NuGet.ProjectModel.Test
                                 new LockFileDependency()
                                 {
                                     Id = "PackageA",
-                                    Type = PackageInstallationType.Direct,
+                                    Type = PackageDependencyType.Direct,
                                     RequestedVersion = VersionRange.Parse("1.0.0"),
                                     ResolvedVersion = NuGetVersion.Parse("1.0.0"),
                                     Sha512 = "sha3",
@@ -73,7 +73,7 @@ namespace NuGet.ProjectModel.Test
                                 new LockFileDependency()
                                 {
                                     Id = "runtime.win10-arm.PackageA",
-                                    Type = PackageInstallationType.Transitive,
+                                    Type = PackageDependencyType.Transitive,
                                     ResolvedVersion = NuGetVersion.Parse("1.0.0"),
                                     Sha512 = "sha4"
                                 }

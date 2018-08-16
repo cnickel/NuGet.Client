@@ -116,6 +116,7 @@ namespace NuGet.ProjectModel.Test
             var noWarn = new HashSet<NuGetLogCode>() { NuGetLogCode.NU1000, NuGetLogCode.NU1500 };
             var warningsAsErrors = new HashSet<NuGetLogCode>() { NuGetLogCode.NU1001, NuGetLogCode.NU1501 };
             var warningProperties = new WarningProperties(allWarningsAsErrors: allWarningsAsErrors, warningsAsErrors: warningsAsErrors, noWarn: noWarn);
+            var restoreLockProperties = new RestoreLockProperties(restorePackagesWithLockFile: "true", nuGetLockFilePath: null, restoreLockedMode: false, reevaluateNuGetLockFile: false);
             var originalProjectRestoreMetadata = new ProjectRestoreMetadata
             {
                 ProjectStyle = ProjectStyle.PackageReference,
@@ -136,7 +137,8 @@ namespace NuGet.ProjectModel.Test
                 ConfigFilePaths = new List<string>() { "config1" },
                 OriginalTargetFrameworks = new List<string>() { "net45" },
                 Files = new List<ProjectRestoreMetadataFile>() { new ProjectRestoreMetadataFile("packagePath", "absolutePath") },
-                ProjectWideWarningProperties = warningProperties
+                ProjectWideWarningProperties = warningProperties,
+                RestoreLockProperties = restoreLockProperties
             };
 
             return originalProjectRestoreMetadata;

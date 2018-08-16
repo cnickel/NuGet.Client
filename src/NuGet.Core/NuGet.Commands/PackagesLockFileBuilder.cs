@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Linq;
 using NuGet.Common;
 using NuGet.LibraryModel;
@@ -12,19 +13,9 @@ namespace NuGet.Commands
 {
     public class PackagesLockFileBuilder
     {
-        private readonly int _lockFileVersion;
-
-        public PackagesLockFileBuilder(int lockFileVersion)
-        {
-            _lockFileVersion = lockFileVersion;
-        }
-
         public PackagesLockFile CreateNuGetLockFile(LockFile assetsFile)
         {
-            var lockFile = new PackagesLockFile()
-            {
-                Version = _lockFileVersion
-            };
+            var lockFile = new PackagesLockFile();
 
             var libraryLookup = assetsFile.Libraries.Where(e => e.Type == LibraryType.Package)
                 .ToDictionary(e => new PackageIdentity(e.Name, e.Version));
@@ -63,16 +54,16 @@ namespace NuGet.Commands
                     };
 
                     var framework_dep = framework?.Dependencies.FirstOrDefault(
-                        dep => PathUtility.GetStringComparerBasedOnOS().Equals(dep.Name, library.Name));
+                        dep => StringComparer.OrdinalIgnoreCase.Equals(dep.Name, library.Name));
 
                     if (framework_dep != null)
                     {
-                        dependency.Type = PackageInstallationType.Direct;
+                        dependency.Type = PackageDependencyType.Direct;
                         dependency.RequestedVersion = framework_dep.LibraryRange.VersionRange;
                     }
                     else
                     {
-                        dependency.Type = PackageInstallationType.Transitive;
+                        dependency.Type = PackageDependencyType.Transitive;
                     }
 
                     nuGettarget.Dependencies.Add(dependency);
@@ -84,7 +75,7 @@ namespace NuGet.Commands
                     {
                         Id = projectReference.Name,
                         Dependencies = projectReference.Dependencies,
-                        Type = PackageInstallationType.Project
+                        Type = PackageDependencyType.Project
                     };
 
                     nuGettarget.Dependencies.Add(dependency);

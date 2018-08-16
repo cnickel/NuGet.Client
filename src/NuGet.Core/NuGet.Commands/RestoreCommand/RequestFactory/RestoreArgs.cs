@@ -62,7 +62,7 @@ namespace NuGet.Commands
 
         public Guid ParentId { get; set; }
 
-        public bool IsRestore { get; set; } = true;
+        public bool IsRestoreOriginalAction { get; set; } = true;
 
         // Cache directory -> ISettings
         private ConcurrentDictionary<string, ISettings> _settingsCache
@@ -230,7 +230,7 @@ namespace NuGet.Commands
             request.AllowNoOp = !request.CacheContext.NoCache && AllowNoOp;
             request.HideWarningsAndErrors = HideWarningsAndErrors;
             request.ParentId = ParentId;
-            request.IsRestore = IsRestore;
+            request.IsRestoreOriginalAction = IsRestoreOriginalAction;
         }
     }
 }

@@ -30,13 +30,14 @@ namespace NuGet.PackageManagement
         /// </summary>
         public static async Task<IReadOnlyList<RestoreSummary>> RestoreAsync(
             ISolutionManager solutionManager,
+            DependencyGraphSpec dgSpec,
             DependencyGraphCacheContext context,
             RestoreCommandProvidersCache providerCache,
             Action<SourceCacheContext> cacheContextModifier,
             IEnumerable<SourceRepository> sources,
             Guid parentId,
             bool forceRestore,
-            DependencyGraphSpec dgSpec,
+            bool isRestoreOriginalAction,
             ILogger log,
             CancellationToken token)
         {
@@ -56,56 +57,13 @@ namespace NuGet.PackageManagement
                         dgSpec,
                         parentId,
                         forceRestore,
-                        isRestore: true);
+                        isRestoreOriginalAction);
 
                     var restoreSummaries = await RestoreRunner.RunAsync(restoreContext, token);
 
                     RestoreSummary.Log(log, restoreSummaries);
 
                     await PersistDGSpec(dgSpec);
-
-                    return restoreSummaries;
-                }
-            }
-
-            return new List<RestoreSummary>();
-        }
-
-        /// <summary>
-        /// Restore a dg spec. This will not update the context cache.
-        /// </summary>
-        public static async Task<IReadOnlyList<RestoreSummary>> RestoreAsync(
-            DependencyGraphSpec dgSpec,
-            DependencyGraphCacheContext context,
-            RestoreCommandProvidersCache providerCache,
-            Action<SourceCacheContext> cacheContextModifier,
-            IEnumerable<SourceRepository> sources,
-            Guid parentId,
-            bool forceRestore,
-            ILogger log,
-            CancellationToken token)
-        {
-            // Check if there are actual projects to restore before running.
-            if (dgSpec.Restore.Count > 0)
-            {
-                using (var sourceCacheContext = new SourceCacheContext())
-                {
-                    // Update cache context
-                    cacheContextModifier(sourceCacheContext);
-
-                    var restoreContext = GetRestoreContext(
-                        context,
-                        providerCache,
-                        sourceCacheContext,
-                        sources,
-                        dgSpec,
-                        parentId,
-                        forceRestore: forceRestore,
-                        isRestore: false);
-
-                    var restoreSummaries = await RestoreRunner.RunAsync(restoreContext, token);
-
-                    RestoreSummary.Log(log, restoreSummaries);
 
                     return restoreSummaries;
                 }
@@ -176,7 +134,7 @@ namespace NuGet.PackageManagement
                     dgFile,
                     parentId,
                     forceRestore: true,
-                    isRestore: false);
+                    isRestoreOriginalAction: false);
 
                 var requests = await RestoreRunner.GetRequests(restoreContext);
                 var results = await RestoreRunner.RunWithoutCommit(requests, restoreContext);
@@ -289,7 +247,7 @@ namespace NuGet.PackageManagement
             DependencyGraphSpec dgFile,
             Guid parentId,
             bool forceRestore,
-            bool isRestore)
+            bool isRestoreOriginalAction)
         {
             var caching = new CachingSourceProvider(new PackageSourceProvider(context.Settings));
             foreach( var source in sources)
@@ -307,7 +265,7 @@ namespace NuGet.PackageManagement
                 AllowNoOp = !forceRestore,
                 CachingSourceProvider = caching,
                 ParentId = parentId,
-                IsRestore = isRestore
+                IsRestoreOriginalAction = isRestoreOriginalAction
             };
 
             return restoreContext;

@@ -55,7 +55,7 @@ namespace NuGet.ProjectModel
 
                 if (target != null)
                 {
-                    var directDependencies = target.Dependencies.Where(dep => dep.Type == PackageInstallationType.Direct);
+                    var directDependencies = target.Dependencies.Where(dep => dep.Type == PackageDependencyType.Direct);
 
                     if (HasProjectDependencyChanged(framework.Dependencies, directDependencies))
                     {
@@ -73,6 +73,8 @@ namespace NuGet.ProjectModel
                     continue;
                 }
 
+                var projectName = Path.GetFileNameWithoutExtension(p2p.RestoreMetadata.ProjectPath);
+
                 foreach (var framework in p2p.TargetFrameworks)
                 {
                     var target = nuGetLockFile.Targets.FirstOrDefault(
@@ -81,8 +83,8 @@ namespace NuGet.ProjectModel
                     if (target != null)
                     {
                         var projectDependency = target.Dependencies.FirstOrDefault(
-                            dep => dep.Type == PackageInstallationType.Project &&
-                            PathUtility.GetStringComparerBasedOnOS().Equals(dep.Id, p2p.RestoreMetadata.ProjectName));
+                            dep => dep.Type == PackageDependencyType.Project &&
+                            PathUtility.GetStringComparerBasedOnOS().Equals(dep.Id, projectName));
 
                         if (HasP2PDependencyChanged(framework.Dependencies, projectDependency))
                         {
@@ -100,7 +102,7 @@ namespace NuGet.ProjectModel
         {
             foreach (var dependency in newDependencies.Where(dep => dep.LibraryRange.TypeConstraint == LibraryDependencyTarget.Package))
             {
-                var lockFileDependency = lockFileDependencies.FirstOrDefault(d => PathUtility.GetStringComparerBasedOnOS().Equals(d.Id, dependency.Name));
+                var lockFileDependency = lockFileDependencies.FirstOrDefault(d => StringComparer.OrdinalIgnoreCase.Equals(d.Id, dependency.Name));
 
                 if (lockFileDependency == null || !EqualityUtility.EqualsWithNullCheck(lockFileDependency.RequestedVersion, dependency.LibraryRange.VersionRange))
                 {
@@ -123,7 +125,7 @@ namespace NuGet.ProjectModel
 
             foreach (var dependency in newDependencies.Where(dep => dep.LibraryRange.TypeConstraint == LibraryDependencyTarget.Package))
             {
-                var matchedP2PLibrary = projectDependency.Dependencies.FirstOrDefault(dep => PathUtility.GetStringComparerBasedOnOS().Equals(dep.Id, dependency.Name));
+                var matchedP2PLibrary = projectDependency.Dependencies.FirstOrDefault(dep => StringComparer.OrdinalIgnoreCase.Equals(dep.Id, dependency.Name));
 
                 if (matchedP2PLibrary == null || !EqualityUtility.EqualsWithNullCheck(matchedP2PLibrary.VersionRange, dependency.LibraryRange.VersionRange))
                 {

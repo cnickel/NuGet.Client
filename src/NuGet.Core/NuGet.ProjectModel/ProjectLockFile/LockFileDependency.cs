@@ -21,7 +21,7 @@ namespace NuGet.ProjectModel
 
         public string Sha512 { get; set; }
 
-        public PackageInstallationType Type { get; set; }
+        public PackageDependencyType Type { get; set; }
 
         public IList<PackageDependency> Dependencies { get; set; } = new List<PackageDependency>();
 
@@ -37,7 +37,7 @@ namespace NuGet.ProjectModel
                 return true;
             }
 
-            return PathUtility.GetStringComparerBasedOnOS().Equals(Id, other.Id) &&
+            return StringComparer.OrdinalIgnoreCase.Equals(Id, other.Id) &&
                 EqualityUtility.EqualsWithNullCheck(ResolvedVersion, other.ResolvedVersion) &&
                 EqualityUtility.EqualsWithNullCheck(RequestedVersion, other.RequestedVersion) &&
                 EqualityUtility.SequenceEqualWithNullCheck(Dependencies, other.Dependencies) &&

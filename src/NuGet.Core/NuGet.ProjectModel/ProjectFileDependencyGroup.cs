@@ -45,13 +45,6 @@ namespace NuGet.ProjectModel
             return false;
         }
 
-        public ProjectFileDependencyGroup Clone()
-        {
-            var depGroup = new ProjectFileDependencyGroup(FrameworkName, Dependencies?.Select(item => item));
-
-            return depGroup;
-        }
-
         public override bool Equals(object obj)
         {
             return Equals(obj as ProjectFileDependencyGroup);

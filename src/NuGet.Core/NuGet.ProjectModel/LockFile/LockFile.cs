@@ -132,21 +132,6 @@ namespace NuGet.ProjectModel
                 && LogsEqual(other.LogMessages);
         }
 
-        public LockFile Clone()
-        {
-            var lockFile = new LockFile();
-            lockFile.Version = Version;
-            lockFile.Path = Path;
-            lockFile.ProjectFileDependencyGroups = ProjectFileDependencyGroups?.Select(item => item.Clone()).ToList();
-            lockFile.Libraries = Libraries?.Select(item => item.Clone()).ToList();
-            lockFile.Targets = Targets?.Select(item => item.Clone()).ToList();
-            lockFile.PackageFolders = new List<LockFileItem>(PackageFolders);
-            lockFile.PackageSpec = PackageSpec.Clone();
-            lockFile.LogMessages = new List<IAssetsLogMessage>(LogMessages);
-
-            return lockFile;
-        }
-
         private bool LogsEqual(IList<IAssetsLogMessage> otherLogMessages)
         {
             if (ReferenceEquals(LogMessages, otherLogMessages))

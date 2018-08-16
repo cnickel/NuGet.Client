@@ -88,8 +88,8 @@ namespace NuGet.ProjectModel
         {
             var lockFile = new PackagesLockFile()
             {
-                Version = LockFileFormat.ReadInt(cursor, VersionProperty, defaultValue: int.MinValue),
-                Targets = LockFileFormat.ReadObject(cursor[DependenciesProperty] as JObject, ReadDependency),
+                Version = JsonUtility.ReadInt(cursor, VersionProperty, defaultValue: int.MinValue),
+                Targets = JsonUtility.ReadObject(cursor[DependenciesProperty] as JObject, ReadDependency),
             };
 
             return lockFile;
@@ -140,7 +140,7 @@ namespace NuGet.ProjectModel
             var json = new JObject
             {
                 [VersionProperty] = new JValue(lockFile.Version),
-                [DependenciesProperty] = LockFileFormat.WriteObject(lockFile.Targets, WriteTarget),
+                [DependenciesProperty] = JsonUtility.WriteObject(lockFile.Targets, WriteTarget),
             };
 
             return json;
@@ -148,12 +148,12 @@ namespace NuGet.ProjectModel
 
         private static PackagesLockFileTarget ReadDependency(string property, JToken json)
         {
-            var parts = property.Split(LockFileFormat.PathSplitChars, 2);
+            var parts = property.Split(JsonUtility.PathSplitChars, 2);
 
             var target = new PackagesLockFileTarget
             {
                 TargetFramework = NuGetFramework.Parse(parts[0]),
-                Dependencies = LockFileFormat.ReadObject(json as JObject, ReadTargetDependency)
+                Dependencies = JsonUtility.ReadObject(json as JObject, ReadTargetDependency)
             };
 
             if (parts.Length == 2)
@@ -169,41 +169,41 @@ namespace NuGet.ProjectModel
             var dependency = new LockFileDependency
             {
                 Id = property,
-                Dependencies = LockFileFormat.ReadObject(json[DependenciesProperty] as JObject, LockFileFormat.ReadPackageDependency)
+                Dependencies = JsonUtility.ReadObject(json[DependenciesProperty] as JObject, JsonUtility.ReadPackageDependency)
             };
 
             var jObject = json as JObject;
 
-            var typeString = LockFileFormat.ReadProperty<string>(jObject, TypeProperty);
+            var typeString = JsonUtility.ReadProperty<string>(jObject, TypeProperty);
 
             if (!string.IsNullOrEmpty(typeString)
-                && Enum.TryParse<PackageInstallationType>(typeString, ignoreCase: true, result: out var installationType))
+                && Enum.TryParse<PackageDependencyType>(typeString, ignoreCase: true, result: out var installationType))
             {
                 dependency.Type = installationType;
             }
 
-            var resolvedString = LockFileFormat.ReadProperty<string>(jObject, ResolvedProperty);
+            var resolvedString = JsonUtility.ReadProperty<string>(jObject, ResolvedProperty);
 
             if (!string.IsNullOrEmpty(resolvedString))
             {
                 dependency.ResolvedVersion = NuGetVersion.Parse(resolvedString);
             }
 
-            var requestedString = LockFileFormat.ReadProperty<string>(jObject, RequestedProperty);
+            var requestedString = JsonUtility.ReadProperty<string>(jObject, RequestedProperty);
 
             if (!string.IsNullOrEmpty(requestedString))
             {
                 dependency.RequestedVersion = VersionRange.Parse(requestedString);
             }
 
-            dependency.Sha512 = LockFileFormat.ReadProperty<string>(jObject, Sha512Property);
+            dependency.Sha512 = JsonUtility.ReadProperty<string>(jObject, Sha512Property);
 
             return dependency;
         }
 
         private static JProperty WriteTarget(PackagesLockFileTarget target)
         {
-            var json = LockFileFormat.WriteObject(target.Dependencies, WriteTargetDependency);
+            var json = JsonUtility.WriteObject(target.Dependencies, WriteTargetDependency);
 
             var key = target.Name;
 
@@ -236,7 +236,7 @@ namespace NuGet.ProjectModel
             {
                 var ordered = dependency.Dependencies.OrderBy(dep => dep.Id, StringComparer.Ordinal);
 
-                json[DependenciesProperty] = LockFileFormat.WriteObject(ordered, LockFileFormat.WritePackageDependency);
+                json[DependenciesProperty] = JsonUtility.WriteObject(ordered, JsonUtility.WritePackageDependency);
             }
 
             return new JProperty(dependency.Id, json);

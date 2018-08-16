@@ -204,7 +204,7 @@ namespace NuGet.DependencyResolver
             // This is only applicable when packages has to be resolved from packages.lock.json file
             if (lockFileLibraries.TryGetValue(key, out var libraries))
             {
-                var library = libraries.FirstOrDefault(lib => PathUtility.GetStringComparerBasedOnOS().Equals(lib.Name, libraryRange.Name));
+                var library = libraries.FirstOrDefault(lib => StringComparer.OrdinalIgnoreCase.Equals(lib.Name, libraryRange.Name));
 
                 if (library != null)
                 {
