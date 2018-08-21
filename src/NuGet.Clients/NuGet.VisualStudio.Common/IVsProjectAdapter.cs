@@ -146,11 +146,5 @@ namespace NuGet.VisualStudio
         /// </summary>
         /// <returns></returns>
         Task<bool> IsRestoreLockedAsync();
-
-        /// <summary>
-        /// ReevaluateNuGetLockFile project property.
-        /// </summary>
-        /// <returns></returns>
-        Task<bool> IsReevaluateNuGetLockFileAsync();
     }
 }

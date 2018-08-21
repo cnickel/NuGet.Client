@@ -2486,14 +2486,13 @@ namespace NuGet.Commands.Test
         }
 
         [Theory]
-        [InlineData("true", "c:\\temp\\nuget.lock.json", "true", null)]
-        [InlineData(null, "c:\\temp\\nuget.lock.json", "false", "true")]
-        [InlineData("false", null, null, "false")]
+        [InlineData("true", "c:\\temp\\nuget.lock.json", "true")]
+        [InlineData(null, "c:\\temp\\nuget.lock.json", "false")]
+        [InlineData("false", null, null)]
         public void MSBuildRestoreUtility_GetPackageSpec_NuGetLockFileProperties(
             string RestoreWithLockFile,
             string NuGetLockFilePath,
-            string LockedMode,
-            string ReevaluateNuGetLockFile)
+            string LockedMode)
         {
             using (var workingDir = TestDirectory.Create())
             {
@@ -2515,8 +2514,7 @@ namespace NuGet.Commands.Test
                     { "TargetFrameworks", "net46" },
                     { "RestorePackagesWithLockFile", RestoreWithLockFile },
                     { "NuGetLockFilePath", NuGetLockFilePath },
-                    { "RestoreLockedMode", LockedMode },
-                    { "ReevaluateNuGetLockFile", ReevaluateNuGetLockFile }
+                    { "RestoreLockedMode", LockedMode }
                 });
 
                 var wrappedItems = items.Select(CreateItems).ToList();
@@ -2525,13 +2523,11 @@ namespace NuGet.Commands.Test
                 var dgSpec = MSBuildRestoreUtility.GetDependencySpec(wrappedItems);
                 var project1Spec = dgSpec.Projects.Single();
                 var lockedModeBool = string.IsNullOrEmpty(LockedMode) ? false : bool.Parse(LockedMode);
-                var reevaluate = string.IsNullOrEmpty(ReevaluateNuGetLockFile) ? false : bool.Parse(ReevaluateNuGetLockFile);
 
                 // Assert
                 project1Spec.RestoreMetadata.RestoreLockProperties.RestorePackagesWithLockFile.Should().Be(RestoreWithLockFile);
                 project1Spec.RestoreMetadata.RestoreLockProperties.NuGetLockFilePath.Should().Be(NuGetLockFilePath);
                 project1Spec.RestoreMetadata.RestoreLockProperties.RestoreLockedMode.Should().Be(lockedModeBool);
-                project1Spec.RestoreMetadata.RestoreLockProperties.ReevaluateNuGetLockFile.Should().Be(reevaluate);
             }
         }
 

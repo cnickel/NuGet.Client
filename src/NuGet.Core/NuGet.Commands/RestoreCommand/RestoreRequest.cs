@@ -165,5 +165,7 @@ namespace NuGet.Commands
         public Guid ParentId { get; set;}
 
         public bool IsRestoreOriginalAction { get; set; } = true;
+
+        public bool ReevaluateRestoreGraph { get; set; }
     }
 }

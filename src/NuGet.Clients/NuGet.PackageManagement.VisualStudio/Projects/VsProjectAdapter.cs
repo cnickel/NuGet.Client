@@ -388,15 +388,6 @@ namespace NuGet.PackageManagement.VisualStudio
             return MSBuildStringUtility.IsTrue(value);
         }
 
-        public async Task<bool> IsReevaluateNuGetLockFileAsync()
-        {
-            await _threadingService.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-            var value = await BuildProperties.GetPropertyValueAsync(ProjectBuildProperties.ReevaluateNuGetLockFile);
-
-            return MSBuildStringUtility.IsTrue(value);
-        }
-
         private async Task<string> GetTargetFrameworkStringAsync()
         {
             await _threadingService.JoinableTaskFactory.SwitchToMainThreadAsync();

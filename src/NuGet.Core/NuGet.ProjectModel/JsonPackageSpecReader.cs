@@ -337,8 +337,7 @@ namespace NuGet.ProjectModel
                 msbuildMetadata.RestoreLockProperties = new RestoreLockProperties(
                     rawMSBuildMetadata.GetValue<string>("restorePackagesWithLockFile"),
                     rawMSBuildMetadata.GetValue<string>("nuGetLockFilePath"),
-                    GetBoolOrFalse(rawMSBuildMetadata, "restoreLockedMode", packageSpec.FilePath),
-                    GetBoolOrFalse(rawMSBuildMetadata, "reevaluateNuGetLockFile", packageSpec.FilePath));
+                    GetBoolOrFalse(rawMSBuildMetadata, "restoreLockedMode", packageSpec.FilePath));
             }
 
             return msbuildMetadata;

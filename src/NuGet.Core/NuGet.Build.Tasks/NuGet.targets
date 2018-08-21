@@ -119,7 +119,8 @@ Copyright (c) .NET Foundation. All rights reserved.
       RestoreRecursive="$(RestoreRecursive)"
       RestoreForce="$(RestoreForce)"
       HideWarningsAndErrors="$(HideWarningsAndErrors)"
-      Interactive="$(NuGetInteractive)" />
+      Interactive="$(NuGetInteractive)"
+      ReevaluateRestoreGraph="$(ReevaluateRestoreGraph)"/>
   </Target>
 
   <!--
@@ -660,7 +661,6 @@ Copyright (c) .NET Foundation. All rights reserved.
         <RestorePackagesWithLockFile>$(RestorePackagesWithLockFile)</RestorePackagesWithLockFile>
         <NuGetLockFilePath>$(NuGetLockFilePath)</NuGetLockFilePath>
         <RestoreLockedMode>$(RestoreLockedMode)</RestoreLockedMode>
-        <ReevaluateNuGetLockFile>$(ReevaluateNuGetLockFile)</ReevaluateNuGetLockFile>
       </_RestoreGraphEntry>
     </ItemGroup>
 

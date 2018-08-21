@@ -432,9 +432,8 @@ namespace NuGet.Commands
                 return Tuple.Create(success, Tuple.Create(isLockFileValid, packagesLockFile));
             }
 
-            // read packages.lock.json file if exists and ReevaluateNuGetLockFile is not set to true
-            if (!_request.Project.RestoreMetadata.RestoreLockProperties.ReevaluateNuGetLockFile &&
-                File.Exists(packagesLockFilePath))
+            // read packages.lock.json file if exists and ReevaluateRestoreGraph flag is not set to true
+            if (!_request.ReevaluateRestoreGraph && File.Exists(packagesLockFilePath))
             {
                 packagesLockFile = PackagesLockFileFormat.Read(packagesLockFilePath, _logger);
 
@@ -486,7 +485,7 @@ namespace NuGet.Commands
             // if --reevaluate flag is passed then restore noop check will also be skipped.
             // this will also help us to get rid of -force flag in near future.
             if (_request.AllowNoOp &&
-                !_request.Project.RestoreMetadata.RestoreLockProperties.ReevaluateNuGetLockFile &&
+                !_request.ReevaluateRestoreGraph &&
                 File.Exists(_request.Project.RestoreMetadata.CacheFilePath))
             {
                 cacheFile = FileUtility.SafeRead(_request.Project.RestoreMetadata.CacheFilePath, (stream, path) => CacheFileFormat.Read(stream, _logger, path));

@@ -765,15 +765,14 @@ namespace NuGet.SolutionRestoreManager.Test
         }
 
         [Theory]
-        [InlineData("true", null, "false", "false")]
-        [InlineData(null, "packages.A.lock.json", null, "true")]
-        [InlineData("true", null, "true", null)]
-        [InlineData("false", null, "false", "true")]
+        [InlineData("true", null, "false")]
+        [InlineData(null, "packages.A.lock.json", null)]
+        [InlineData("true", null, "true")]
+        [InlineData("false", null, "false")]
         public async Task NominateProjectAsync_LockFileSettings(
             string restorePackagesWithLockFile,
             string lockFilePath,
-            string restoreLockedMode,
-            string reevaluateNuGetLockFile)
+            string restoreLockedMode)
         {
             var cps = NewCpsProject("{ }");
             var projectFullPath = cps.ProjectFullPath;
@@ -786,8 +785,7 @@ namespace NuGet.SolutionRestoreManager.Test
                         new[] {
                             new VsProjectProperty("RestorePackagesWithLockFile", restorePackagesWithLockFile),
                             new VsProjectProperty("NuGetLockFilePath", lockFilePath),
-                            new VsProjectProperty("RestoreLockedMode", restoreLockedMode),
-                            new VsProjectProperty("ReevaluateNuGetLockFile", reevaluateNuGetLockFile)}))
+                            new VsProjectProperty("RestoreLockedMode", restoreLockedMode)}))
                 .Build();
 
             // Act
@@ -801,7 +799,6 @@ namespace NuGet.SolutionRestoreManager.Test
             Assert.Equal(restorePackagesWithLockFile, actualProjectSpec.RestoreMetadata.RestoreLockProperties.RestorePackagesWithLockFile);
             Assert.Equal(lockFilePath, actualProjectSpec.RestoreMetadata.RestoreLockProperties.NuGetLockFilePath);
             Assert.Equal(MSBuildStringUtility.IsTrue(restoreLockedMode), actualProjectSpec.RestoreMetadata.RestoreLockProperties.RestoreLockedMode);
-            Assert.Equal(MSBuildStringUtility.IsTrue(reevaluateNuGetLockFile), actualProjectSpec.RestoreMetadata.RestoreLockProperties.ReevaluateNuGetLockFile);
         }
 
         private async Task<DependencyGraphSpec> CaptureNominateResultAsync(

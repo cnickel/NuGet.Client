@@ -21,7 +21,6 @@ namespace NuGet.PackageManagement.VisualStudio.Test
         private readonly string _restorePackagesWithLockFile;
         private readonly string _nuGetLockFilePath;
         private readonly bool _restoreLockedMode;
-        private readonly bool _reevaluateNuGetLockFile;
 
         public TestVSProjectAdapter(
             string fullProjectPath,
@@ -29,8 +28,7 @@ namespace NuGet.PackageManagement.VisualStudio.Test
             string targetFrameworkString,
             string restorePackagesWithLockFile = null,
             string nuGetLockFilePath = null,
-            bool restoreLockedMode = false,
-            bool reevaluateNuGetLockFile = false)
+            bool restoreLockedMode = false)
         {
             FullProjectPath = fullProjectPath;
             ProjectNames = projectNames;
@@ -38,7 +36,6 @@ namespace NuGet.PackageManagement.VisualStudio.Test
             _restorePackagesWithLockFile = restorePackagesWithLockFile;
             _nuGetLockFilePath = nuGetLockFilePath;
             _restoreLockedMode = restoreLockedMode;
-            _reevaluateNuGetLockFile = reevaluateNuGetLockFile;
         }
 
         public string AssetTargetFallback
@@ -215,11 +212,6 @@ namespace NuGet.PackageManagement.VisualStudio.Test
         public Task<bool> IsRestoreLockedAsync()
         {
             return Task.FromResult(_restoreLockedMode);
-        }
-
-        public Task<bool> IsReevaluateNuGetLockFileAsync()
-        {
-            return Task.FromResult(_reevaluateNuGetLockFile);
         }
     }
 }

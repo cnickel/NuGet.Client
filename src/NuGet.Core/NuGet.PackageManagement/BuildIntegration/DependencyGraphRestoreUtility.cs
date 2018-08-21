@@ -41,6 +41,9 @@ namespace NuGet.PackageManagement
             ILogger log,
             CancellationToken token)
         {
+            // TODO: This will flow from UI once we enable UI option to trigger reevaluation
+            var reevaluateRestoreGraph = false;
+
             // Check if there are actual projects to restore before running.
             if (dgSpec.Restore.Count > 0)
             {
@@ -57,7 +60,8 @@ namespace NuGet.PackageManagement
                         dgSpec,
                         parentId,
                         forceRestore,
-                        isRestoreOriginalAction);
+                        isRestoreOriginalAction,
+                        reevaluateRestoreGraph);
 
                     var restoreSummaries = await RestoreRunner.RunAsync(restoreContext, token);
 
@@ -134,7 +138,8 @@ namespace NuGet.PackageManagement
                     dgFile,
                     parentId,
                     forceRestore: true,
-                    isRestoreOriginalAction: false);
+                    isRestoreOriginalAction: false,
+                    reevaluateRestoreGraph: true);
 
                 var requests = await RestoreRunner.GetRequests(restoreContext);
                 var results = await RestoreRunner.RunWithoutCommit(requests, restoreContext);
@@ -247,7 +252,8 @@ namespace NuGet.PackageManagement
             DependencyGraphSpec dgFile,
             Guid parentId,
             bool forceRestore,
-            bool isRestoreOriginalAction)
+            bool isRestoreOriginalAction,
+            bool reevaluateRestoreGraph)
         {
             var caching = new CachingSourceProvider(new PackageSourceProvider(context.Settings));
             foreach( var source in sources)
@@ -265,7 +271,8 @@ namespace NuGet.PackageManagement
                 AllowNoOp = !forceRestore,
                 CachingSourceProvider = caching,
                 ParentId = parentId,
-                IsRestoreOriginalAction = isRestoreOriginalAction
+                IsRestoreOriginalAction = isRestoreOriginalAction,
+                ReevaluateRestoreGraph = reevaluateRestoreGraph
             };
 
             return restoreContext;

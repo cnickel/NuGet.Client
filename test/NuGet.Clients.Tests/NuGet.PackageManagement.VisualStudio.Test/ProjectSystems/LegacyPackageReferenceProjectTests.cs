@@ -748,15 +748,14 @@ namespace NuGet.PackageManagement.VisualStudio.Test
         }
 
         [Theory]
-        [InlineData("true", null, false, false)]
-        [InlineData(null, "packages.A.lock.json", false, true)]
-        [InlineData("true", null, true, true)]
-        [InlineData("false", null, false, false)]
+        [InlineData("true", null, false)]
+        [InlineData(null, "packages.A.lock.json", false)]
+        [InlineData("true", null, true)]
+        [InlineData("false", null, false)]
         public async Task GetPackageSpecsAsync_ReadLockFileSettings(
             string restorePackagesWithLockFile,
             string lockFilePath,
-            bool restoreLockedMode,
-            bool reevaluateNuGetLockFile)
+            bool restoreLockedMode)
         {
             // Arrange
             using (var testDirectory = TestDirectory.Create())
@@ -773,10 +772,6 @@ namespace NuGet.PackageManagement.VisualStudio.Test
                 Mock.Get(projectAdapter)
                     .Setup(x => x.IsRestoreLockedAsync())
                     .ReturnsAsync(restoreLockedMode);
-
-                Mock.Get(projectAdapter)
-                    .Setup(x => x.IsReevaluateNuGetLockFileAsync())
-                    .ReturnsAsync(reevaluateNuGetLockFile);
 
                 var projectServices = new TestProjectSystemServices();
 
@@ -807,9 +802,6 @@ namespace NuGet.PackageManagement.VisualStudio.Test
 
                 // assert restoreLockedMode
                 Assert.Equal(restoreLockedMode, actualRestoreSpec.RestoreMetadata.RestoreLockProperties.RestoreLockedMode);
-
-                // assert reevaluateNuGetLockFile
-                Assert.Equal(reevaluateNuGetLockFile, actualRestoreSpec.RestoreMetadata.RestoreLockProperties.ReevaluateNuGetLockFile);
             }
         }
 
