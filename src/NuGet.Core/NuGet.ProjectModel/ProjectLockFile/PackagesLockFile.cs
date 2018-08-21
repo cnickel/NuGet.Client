@@ -11,7 +11,7 @@ namespace NuGet.ProjectModel
 {
     public class PackagesLockFile : IEquatable<PackagesLockFile>
     {
-        public int Version { get; } = PackagesLockFileFormat.Version;
+        public int Version { get; set; } = PackagesLockFileFormat.Version;
 
         public string Path { get; set; }
 
