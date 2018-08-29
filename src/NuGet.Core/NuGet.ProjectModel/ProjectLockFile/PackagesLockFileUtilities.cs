@@ -28,15 +28,17 @@ namespace NuGet.ProjectModel
 
             var path = project.RestoreMetadata.RestoreLockProperties.NuGetLockFilePath;
 
-            if (string.IsNullOrEmpty(path))
+            if (!string.IsNullOrEmpty(path))
             {
-                var projectName = Path.GetFileNameWithoutExtension(project.RestoreMetadata.ProjectPath);
-                path = Path.Combine(project.BaseDirectory, "packages." + projectName.Replace(' ', '_') + ".lock.json");
+                return Path.Combine(project.BaseDirectory, path);
+            }
 
-                if (!File.Exists(path))
-                {
-                    path = Path.Combine(project.BaseDirectory, PackagesLockFileFormat.LockFileName);
-                }
+            var projectName = Path.GetFileNameWithoutExtension(project.RestoreMetadata.ProjectPath);
+            path = Path.Combine(project.BaseDirectory, "packages." + projectName.Replace(' ', '_') + ".lock.json");
+
+            if (!File.Exists(path))
+            {
+                path = Path.Combine(project.BaseDirectory, PackagesLockFileFormat.LockFileName);
             }
 
             return path;
